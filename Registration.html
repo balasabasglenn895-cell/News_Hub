@@ -1,0 +1,775 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Youth Camp 2026 | Bayawan City</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #f4f7fb;
+      color: #172033;
+      line-height: 1.6;
+    }
+
+    /* HEADER */
+    .hero {
+      background: linear-gradient(135deg, #102a43, #1769aa);
+      color: white;
+      padding: 45px 20px;
+      text-align: center;
+    }
+
+    .hero .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      padding: 7px 15px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    .hero h1 {
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    /* CONTAINER */
+    .container {
+      width: 92%;
+      max-width: 1050px;
+      margin: 30px auto;
+    }
+
+    /* INFO CARDS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat {
+      background: white;
+      border-radius: 15px;
+      padding: 22px;
+      text-align: center;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+    }
+
+    .stat .number {
+      font-size: 30px;
+      font-weight: 800;
+      color: #1769aa;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 13px;
+      color: #667085;
+      margin-top: 3px;
+    }
+
+    /* SECTION */
+    .section {
+      background: white;
+      border-radius: 18px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.06);
+    }
+
+    .section-title {
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .section-subtitle {
+      color: #667085;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    /* FORM */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 7px;
+      font-size: 14px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d0d5dd;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      background: white;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #1769aa;
+      box-shadow: 0 0 0 3px rgba(23,105,170,0.12);
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .radio-option {
+      flex: 1;
+      min-width: 130px;
+      border: 1px solid #d0d5dd;
+      padding: 13px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.2s;
+    }
+
+    .radio-option:hover {
+      border-color: #1769aa;
+      background: #f3f8fc;
+    }
+
+    .radio-option input {
+      width: auto;
+      margin-right: 6px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 11px;
+      background: #1769aa;
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .submit-btn:hover {
+      background: #0f568d;
+    }
+
+    /* SEARCH */
+    .search {
+      margin-bottom: 18px;
+    }
+
+    /* PARTICIPANT LIST */
+    .participant-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .participant {
+      border: 1px solid #e4e7ec;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafbfc;
+    }
+
+    .participant-name {
+      font-weight: 700;
+    }
+
+    .participant-badge {
+      font-size: 12px;
+      padding: 5px 9px;
+      border-radius: 50px;
+      background: #e9f5ff;
+      color: #1769aa;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    /* JERSEY TABLE */
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 500px;
+    }
+
+    th,
+    td {
+      padding: 13px;
+      border-bottom: 1px solid #eaecf0;
+      text-align: left;
+    }
+
+    th {
+      background: #f8fafc;
+      font-size: 13px;
+      color: #475467;
+    }
+
+    /* NOTICE */
+    .notice {
+      background: #fff8e6;
+      border: 1px solid #f5d98b;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 14px;
+      margin-top: 15px;
+    }
+
+    /* SUCCESS MESSAGE */
+    .success {
+      display: none;
+      background: #ecfdf3;
+      border: 1px solid #abefc6;
+      color: #067647;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      font-weight: 600;
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #667085;
+      font-size: 13px;
+    }
+
+    /* MOBILE */
+    @media (max-width: 700px) {
+
+      .hero h1 {
+        font-size: 27px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .participant-list {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="hero">
+    <div class="badge">YOUTH CAMP 2026</div>
+    <h1>Youth Camp -- Bayawan City</h1>
+    <p>December 2026 • Final Attendance & Jersey Registration</p>
+  </header>
+
+  <main class="container">
+
+    <!-- STATS -->
+    <div class="stats">
+
+      <div class="stat">
+        <div class="number" id="joinCount">7</div>
+        <span>Confirmed to Join</span>
+      </div>
+
+      <div class="stat">
+        <div class="number" id="jerseyCount">8</div>
+        <span>Jerseys Ordered</span>
+      </div>
+
+      <div class="stat">
+        <div class="number">₱330</div>
+        <span>Jersey Price</span>
+      </div>
+
+    </div>
+
+    <!-- REGISTRATION FORM -->
+    <section class="section">
+
+      <h2 class="section-title">Final Registration</h2>
+      <p class="section-subtitle">
+        Enter your name below and select your Youth Camp and jersey preference.
+      </p>
+
+      <div class="success" id="successMessage">
+        ✅ Your response has been added successfully!
+      </div>
+
+      <form id="registrationForm">
+
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input
+            type="text"
+            id="name"
+            placeholder="Enter your name"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label>Will you join the Youth Camp?</label>
+
+          <div class="radio-group">
+
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="join"
+                value="yes"
+                required
+              >
+              Yes, I will join
+            </label>
+
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="join"
+                value="no"
+              >
+              Not joining
+            </label>
+
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Will you avail the Youth Camp jersey?</label>
+
+          <div class="radio-group">
+
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="jersey"
+                value="yes"
+                onclick="showSize()"
+                required
+              >
+              Yes -- ₱330
+            </label>
+
+            <label class="radio-option">
+              <input
+                type="radio"
+                name="jersey"
+                value="no"
+                onclick="hideSize()"
+              >
+              No
+            </label>
+
+          </div>
+        </div>
+
+        <div
+          class="form-group hidden"
+          id="sizeGroup"
+        >
+          <label for="size">Jersey Size</label>
+
+          <select id="size">
+            <option value="">Select size</option>
+            <option value="XS">XS</option>
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="2XL">2XL</option>
+            <option value="3XL">3XL</option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          class="submit-btn"
+        >
+          Submit My Response
+        </button>
+
+      </form>
+
+      <div class="notice">
+        <strong>📌 Important:</strong>
+        Please make sure your name and jersey size are correct before submitting.
+        Jersey price is <strong>₱330</strong>.
+      </div>
+
+    </section>
+
+
+    <!-- CURRENT PARTICIPANTS -->
+    <section class="section">
+
+      <h2 class="section-title">Confirmed Participants</h2>
+
+      <p class="section-subtitle">
+        Current list of those who have confirmed that they will join.
+      </p>
+
+      <div class="search">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="🔎 Search participant..."
+          onkeyup="searchParticipants()"
+        >
+      </div>
+
+      <div
+        class="participant-list"
+        id="participantList"
+      ></div>
+
+    </section>
+
+
+    <!-- JERSEY ORDERS -->
+    <section class="section">
+
+      <h2 class="section-title">Youth Camp Jersey Orders</h2>
+
+      <p class="section-subtitle">
+        Current jersey orders -- <strong>₱330 each</strong>
+      </p>
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Size</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+
+          <tbody id="jerseyTable"></tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+    Youth Camp 2026 • Bayawan City<br>
+    Please coordinate with the organizers for final confirmation.
+  </footer>
+
+
+  <script>
+
+    /* INITIAL PARTICIPANTS */
+
+    let participants = [
+      "Ate Faith",
+      "Kyns",
+      "Melody",
+      "Louise",
+      "Renzy",
+      "Glenn",
+      "Shine"
+    ];
+
+    /* INITIAL JERSEY ORDERS */
+
+    let jerseys = [
+      { name: "Ate Faith", size: "M" },
+      { name: "Kyns", size: "XS" },
+      { name: "Shaine", size: "XS" },
+      { name: "Melody", size: "XS" },
+      { name: "Louise", size: "XS" },
+      { name: "Renzy", size: "XS" },
+      { name: "Glenn", size: "M" },
+      { name: "Shine", size: "XS" }
+    ];
+
+
+    /* DISPLAY PARTICIPANTS */
+
+    function displayParticipants(list = participants) {
+
+      const container =
+        document.getElementById("participantList");
+
+      container.innerHTML = "";
+
+      list.forEach((name, index) => {
+
+        const div =
+          document.createElement("div");
+
+        div.className = "participant";
+
+        div.innerHTML = `
+          <span class="participant-name">
+            ${index + 1}. ${name}
+          </span>
+
+          <span class="participant-badge">
+            ✓ Joining
+          </span>
+        `;
+
+        container.appendChild(div);
+
+      });
+
+      document.getElementById("joinCount").textContent =
+        participants.length;
+    }
+
+
+    /* DISPLAY JERSEYS */
+
+    function displayJerseys() {
+
+      const table =
+        document.getElementById("jerseyTable");
+
+      table.innerHTML = "";
+
+      jerseys.forEach((person, index) => {
+
+        const row =
+          document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td><strong>${person.name}</strong></td>
+          <td>${person.size}</td>
+          <td>₱330</td>
+        `;
+
+        table.appendChild(row);
+
+      });
+
+      document.getElementById("jerseyCount").textContent =
+        jerseys.length;
+    }
+
+
+    /* SEARCH */
+
+    function searchParticipants() {
+
+      const search =
+        document
+          .getElementById("searchInput")
+          .value
+          .toLowerCase();
+
+      const filtered =
+        participants.filter(name =>
+          name.toLowerCase().includes(search)
+        );
+
+      displayParticipants(filtered);
+    }
+
+
+    /* JERSEY SIZE */
+
+    function showSize() {
+
+      document
+        .getElementById("sizeGroup")
+        .classList.remove("hidden");
+
+      document
+        .getElementById("size")
+        .required = true;
+    }
+
+
+    function hideSize() {
+
+      document
+        .getElementById("sizeGroup")
+        .classList.add("hidden");
+
+      document
+        .getElementById("size")
+        .required = false;
+
+      document
+        .getElementById("size")
+        .value = "";
+    }
+
+
+    /* FORM SUBMISSION */
+
+    document
+      .getElementById("registrationForm")
+      .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const name =
+          document
+            .getElementById("name")
+            .value
+            .trim();
+
+        const join =
+          document.querySelector(
+            'input[name="join"]:checked'
+          ).value;
+
+        const jersey =
+          document.querySelector(
+            'input[name="jersey"]:checked'
+          ).value;
+
+        const size =
+          document
+            .getElementById("size")
+            .value;
+
+
+        /* CHECK DUPLICATE */
+
+        if (
+          participants.some(
+            person =>
+              person.toLowerCase() === name.toLowerCase()
+          )
+        ) {
+
+          alert(
+            "This name is already on the participant list."
+          );
+
+          return;
+        }
+
+
+        /* ADD PARTICIPANT */
+
+        if (join === "yes") {
+
+          participants.push(name);
+
+        }
+
+
+        /* ADD JERSEY */
+
+        if (jersey === "yes") {
+
+          if (!size) {
+
+            alert(
+              "Please select your jersey size."
+            );
+
+            return;
+
+          }
+
+          jerseys.push({
+            name: name,
+            size: size
+          });
+
+        }
+
+
+        /* UPDATE DISPLAY */
+
+        displayParticipants();
+        displayJerseys();
+
+
+        /* SUCCESS */
+
+        const success =
+          document.getElementById(
+            "successMessage"
+          );
+
+        success.style.display = "block";
+
+        success.innerHTML = `
+          ✅ <strong>${name}</strong>,
+          your response has been recorded on this page.
+        `;
+
+
+        /* RESET */
+
+        this.reset();
+
+        hideSize();
+
+
+        /* SCROLL */
+
+        success.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+
+      });
+
+
+    /* INITIAL DISPLAY */
+
+    displayParticipants();
+    displayJerseys();
+
+  </script>
+
+</body>
+</html>
