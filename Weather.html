@@ -1,0 +1,2055 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Canlaon City Air Quality Dashboard
+</title>
+
+<style>
+
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+
+    --aqi-color:#facc15;
+    --aqi-dark:#ca8a04;
+
+    --background:#f4f7fb;
+    --card:#ffffff;
+
+    --text:#172033;
+    --muted:#64748b;
+
+    --border:#e2e8f0;
+}
+
+body{
+
+    min-height:100vh;
+
+    font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color:var(--text);
+
+    background:
+
+        radial-gradient(
+            circle at top left,
+            rgba(59,130,246,.14),
+            transparent 35%
+        ),
+
+        radial-gradient(
+            circle at bottom right,
+            rgba(16,185,129,.12),
+            transparent 35%
+        ),
+
+        var(--background);
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1e293b
+        );
+
+    color:white;
+
+    padding:28px 18px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(15,23,42,.18);
+}
+
+.header-inner{
+
+    max-width:1150px;
+
+    margin:auto;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+}
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+}
+
+.logo{
+
+    width:58px;
+
+    height:58px;
+
+    flex-shrink:0;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #22c55e,
+            #3b82f6
+        );
+
+    box-shadow:
+        0 8px 25px
+        rgba(34,197,94,.25);
+}
+
+.brand h1{
+
+    font-size:21px;
+
+    letter-spacing:.5px;
+}
+
+.brand p{
+
+    color:#cbd5e1;
+
+    margin-top:5px;
+
+    font-size:13px;
+}
+
+.live{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:10px 16px;
+
+    border-radius:30px;
+
+    background:
+        rgba(255,255,255,.08);
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    font-size:12px;
+
+    font-weight:900;
+}
+
+.live-dot{
+
+    width:9px;
+
+    height:9px;
+
+    border-radius:50%;
+
+    background:#22c55e;
+
+    box-shadow:
+        0 0 12px #22c55e;
+
+    animation:
+        pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+
+    50%{
+        opacity:.4;
+        transform:scale(.75);
+    }
+
+}
+
+
+/* =====================================================
+   MAIN
+===================================================== */
+
+.container{
+
+    width:100%;
+
+    max-width:1150px;
+
+    margin:auto;
+
+    padding:
+        32px 18px 50px;
+}
+
+
+/* =====================================================
+   LOCATION
+===================================================== */
+
+.location{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    margin-bottom:25px;
+}
+
+.location h2{
+
+    font-size:28px;
+}
+
+.location p{
+
+    margin-top:5px;
+
+    color:var(--muted);
+}
+
+.updated{
+
+    text-align:right;
+
+    color:var(--muted);
+
+    font-size:13px;
+}
+
+.updated strong{
+
+    display:block;
+
+    margin-top:4px;
+
+    color:var(--text);
+}
+
+
+/* =====================================================
+   COMMON CARDS
+===================================================== */
+
+.aqi-card,
+.weather-card,
+.wind-card,
+.scale-card{
+
+    background:
+        rgba(255,255,255,.98);
+
+    border-radius:28px;
+
+    box-shadow:
+        0 20px 55px
+        rgba(15,23,42,.08);
+}
+
+
+/* =====================================================
+   AQI CARD
+===================================================== */
+
+.aqi-card{
+
+    position:relative;
+
+    overflow:hidden;
+
+    padding:35px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.8);
+}
+
+.aqi-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:330px;
+
+    height:330px;
+
+    border-radius:50%;
+
+    top:-155px;
+
+    right:-125px;
+
+    background:
+        var(--aqi-color);
+
+    opacity:.08;
+
+    transition:
+        background .4s ease;
+}
+
+.aqi-top{
+
+    position:relative;
+
+    z-index:2;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+}
+
+.label{
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.5px;
+}
+
+.status{
+
+    padding:10px 17px;
+
+    border-radius:30px;
+
+    background:
+        var(--aqi-color);
+
+    color:#111827;
+
+    font-size:11px;
+
+    font-weight:900;
+
+    letter-spacing:.5px;
+
+    transition:
+        all .4s ease;
+}
+
+
+/* =====================================================
+   AQI NUMBER
+===================================================== */
+
+.aqi-number{
+
+    position:relative;
+
+    z-index:2;
+
+    margin-top:25px;
+}
+
+.aqi-display{
+
+    color:
+        var(--aqi-color);
+
+    font-size:
+        clamp(90px,18vw,170px);
+
+    line-height:.9;
+
+    font-weight:900;
+
+    letter-spacing:-8px;
+
+    transition:
+        color .4s ease;
+}
+
+.aqi-unit{
+
+    margin-top:12px;
+
+    color:var(--muted);
+
+    font-size:16px;
+
+    font-weight:800;
+}
+
+
+/* =====================================================
+   DESCRIPTION
+===================================================== */
+
+.description{
+
+    margin-top:27px;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    background:
+        rgba(148,163,184,.08);
+
+    border-left:
+        5px solid
+        var(--aqi-color);
+
+    transition:
+        border-color .4s ease;
+}
+
+.description h3{
+
+    margin-bottom:7px;
+
+    color:
+        var(--aqi-dark);
+
+    font-size:20px;
+}
+
+.description p{
+
+    color:#475569;
+
+    font-size:14px;
+
+    line-height:1.65;
+}
+
+
+/* =====================================================
+   SECTION HEADER
+===================================================== */
+
+.section-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    margin-bottom:22px;
+}
+
+.section-title{
+
+    font-size:18px;
+
+    font-weight:900;
+}
+
+.section-subtitle{
+
+    margin-top:4px;
+
+    color:var(--muted);
+
+    font-size:13px;
+}
+
+
+/* =====================================================
+   WEATHER CARD
+===================================================== */
+
+.weather-card{
+
+    margin-top:25px;
+
+    padding:28px;
+}
+
+.weather-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:18px;
+}
+
+.weather-box{
+
+    min-height:190px;
+
+    padding:22px;
+
+    border-radius:22px;
+
+    border:
+        1px solid
+        var(--border);
+
+    background:
+        linear-gradient(
+            145deg,
+            #f8fafc,
+            #eef2ff
+        );
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+}
+
+.weather-icon{
+
+    margin-bottom:10px;
+
+    font-size:42px;
+}
+
+.weather-label{
+
+    color:var(--muted);
+
+    font-size:11px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+}
+
+.weather-value{
+
+    margin-top:7px;
+
+    color:#0f172a;
+
+    font-size:25px;
+
+    font-weight:900;
+}
+
+.code-value{
+
+    margin-top:7px;
+
+    color:#0f172a;
+
+    font-size:30px;
+
+    font-weight:900;
+}
+
+.unit{
+
+    margin-top:5px;
+
+    color:#64748b;
+
+    font-size:14px;
+
+    font-weight:800;
+}
+
+.code-note{
+
+    margin-top:9px;
+
+    color:#94a3b8;
+
+    font-size:10px;
+
+    font-weight:700;
+}
+
+
+/* =====================================================
+   WIND CARD
+===================================================== */
+
+.wind-card{
+
+    margin-top:25px;
+
+    padding:28px;
+}
+
+.wind-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:18px;
+}
+
+.wind-info{
+
+    padding:22px;
+
+    border-radius:20px;
+
+    border:
+        1px solid
+        rgba(148,163,184,.12);
+
+    background:
+        rgba(148,163,184,.08);
+
+    display:flex;
+
+    align-items:center;
+
+    gap:17px;
+}
+
+.wind-icon{
+
+    width:55px;
+
+    height:55px;
+
+    flex-shrink:0;
+
+    border-radius:16px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    font-size:27px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0ea5e9,
+            #2563eb
+        );
+}
+
+.wind-content{
+
+    width:100%;
+}
+
+.wind-label{
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+}
+
+.wind-value{
+
+    margin-top:7px;
+
+    color:#0f172a;
+
+    font-size:30px;
+
+    font-weight:900;
+}
+
+.wind-unit{
+
+    margin-top:5px;
+
+    color:#64748b;
+
+    font-size:14px;
+
+    font-weight:800;
+}
+
+
+/* =====================================================
+   AQI CLASSIFICATION SCALE
+===================================================== */
+
+.scale-card{
+
+    margin-top:25px;
+
+    padding:28px;
+}
+
+.scale-title{
+
+    margin-bottom:18px;
+
+    font-size:18px;
+
+    font-weight:900;
+}
+
+.scale{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(6,1fr);
+
+    overflow:hidden;
+
+    border-radius:15px;
+}
+
+.scale-item{
+
+    min-height:75px;
+
+    padding:8px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    color:white;
+
+    font-size:10px;
+
+    line-height:1.4;
+
+    font-weight:900;
+}
+
+.green{
+
+    background:#22c55e;
+}
+
+.yellow{
+
+    background:#facc15;
+
+    color:#111827;
+}
+
+.orange{
+
+    background:#f97316;
+}
+
+.red{
+
+    background:#ef4444;
+}
+
+.violet{
+
+    background:#8b5cf6;
+}
+
+.black{
+
+    background:#111827;
+}
+
+
+/* =====================================================
+   INFO CARDS
+===================================================== */
+
+.info-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:18px;
+
+    margin-top:25px;
+}
+
+.info-card{
+
+    padding:22px;
+
+    border-radius:20px;
+
+    background:
+        rgba(255,255,255,.98);
+
+    box-shadow:
+        0 12px 35px
+        rgba(15,23,42,.07);
+}
+
+.info-icon{
+
+    margin-bottom:10px;
+
+    font-size:25px;
+}
+
+.info-card h4{
+
+    margin-bottom:6px;
+
+    font-size:14px;
+}
+
+.info-card p{
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    line-height:1.5;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+
+    padding:25px 15px;
+
+    text-align:center;
+
+    color:#64748b;
+
+    font-size:12px;
+
+    line-height:1.6;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:850px){
+
+    .weather-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .scale{
+
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+}
+
+@media(max-width:800px){
+
+    .header-inner{
+
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+
+    .location{
+
+        align-items:flex-start;
+
+        flex-direction:column;
+
+        gap:10px;
+    }
+
+    .updated{
+
+        text-align:left;
+    }
+
+    .info-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .aqi-card{
+
+        padding:25px;
+    }
+}
+
+@media(max-width:650px){
+
+    .container{
+
+        padding:
+            25px
+            13px
+            40px;
+    }
+
+    .wind-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .wind-info{
+
+        padding:18px;
+    }
+
+    .scale{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .wind-value{
+
+        font-size:27px;
+    }
+}
+
+@media(max-width:420px){
+
+    .brand h1{
+
+        font-size:17px;
+    }
+
+    .brand p{
+
+        font-size:11px;
+    }
+
+    .location h2{
+
+        font-size:24px;
+    }
+
+    .aqi-display{
+
+        font-size:105px;
+    }
+
+    .weather-box{
+
+        min-height:170px;
+    }
+
+    .status{
+
+        padding:8px 12px;
+
+        font-size:9px;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header">
+
+    <div class="header-inner">
+
+        <div class="brand">
+
+            <div class="logo">
+                🌿
+            </div>
+
+            <div>
+
+                <h1>
+                    CANLAON CITY AIR QUALITY
+                </h1>
+
+                <p>
+                    Air Quality & Weather Monitoring Dashboard
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="live">
+
+            <span class="live-dot"></span>
+
+            LIVE MONITOR
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<main class="container">
+
+
+<!-- =====================================================
+     LOCATION
+===================================================== -->
+
+<div class="location">
+
+    <div>
+
+        <h2>
+            Canlaon City
+        </h2>
+
+        <p>
+            Negros Oriental, Philippines
+        </p>
+
+    </div>
+
+
+    <div class="updated">
+
+        <div>
+            Current Local Time
+        </div>
+
+        <strong id="dateTime">
+            Loading...
+        </strong>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     AQI
+===================================================== -->
+
+<section class="aqi-card">
+
+
+    <div class="aqi-top">
+
+        <div class="label">
+            Air Quality Index
+        </div>
+
+
+        <div
+            class="status"
+            id="status"
+        >
+            MODERATE
+        </div>
+
+    </div>
+
+
+    <div class="aqi-number">
+
+        <div
+            class="aqi-display"
+            id="aqiDisplay"
+        >
+            52
+        </div>
+
+    </div>
+
+
+    <div class="aqi-unit">
+        US AQI
+    </div>
+
+
+    <div class="description">
+
+        <h3 id="descriptionTitle">
+            Moderate
+        </h3>
+
+        <p id="descriptionText">
+            Air quality is acceptable.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     WEATHER
+===================================================== -->
+
+<section class="weather-card">
+
+
+    <div class="section-header">
+
+        <div>
+
+            <div class="section-title">
+                Weather Conditions
+            </div>
+
+            <div class="section-subtitle">
+                Current weather observations
+            </div>
+
+        </div>
+
+
+        <div
+            id="weatherHeaderIcon"
+            style="font-size:30px;"
+        >
+            ☀️
+        </div>
+
+    </div>
+
+
+
+    <div class="weather-grid">
+
+
+        <!-- WEATHER -->
+
+        <div class="weather-box">
+
+            <div
+                class="weather-icon"
+                id="weatherIcon"
+            >
+                ☀️
+            </div>
+
+            <div class="weather-label">
+                Weather Condition
+            </div>
+
+            <div
+                class="weather-value"
+                id="weatherValue"
+            >
+                SUNNY
+            </div>
+
+            <div class="code-note">
+                Code editable only
+            </div>
+
+        </div>
+
+
+
+        <!-- TEMPERATURE -->
+
+        <div class="weather-box">
+
+            <div class="weather-icon">
+                🌡️
+            </div>
+
+            <div class="weather-label">
+                Temperature
+            </div>
+
+            <div
+                class="code-value"
+                id="temperatureValue"
+            >
+                30
+            </div>
+
+            <div class="unit">
+                Degrees Celsius (°C)
+            </div>
+
+            <div class="code-note">
+                Code editable only
+            </div>
+
+        </div>
+
+
+
+        <!-- RAINFALL -->
+
+        <div class="weather-box">
+
+            <div class="weather-icon">
+                🌧️
+            </div>
+
+            <div class="weather-label">
+                Rainfall
+            </div>
+
+            <div
+                class="code-value"
+                id="rainfallValue"
+            >
+                0.9
+            </div>
+
+            <div class="unit">
+                Millimeters (mm)
+            </div>
+
+            <div class="code-note">
+                Code editable only
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     WIND
+===================================================== -->
+
+<section class="wind-card">
+
+
+    <div class="section-header">
+
+        <div>
+
+            <div class="section-title">
+                Wind Conditions
+            </div>
+
+            <div class="section-subtitle">
+                Current wind observations
+            </div>
+
+        </div>
+
+
+        <div style="font-size:28px;">
+            💨
+        </div>
+
+    </div>
+
+
+
+    <div class="wind-grid">
+
+
+        <!-- WIND GUST -->
+
+        <div class="wind-info">
+
+            <div class="wind-icon">
+                💨
+            </div>
+
+
+            <div class="wind-content">
+
+                <div class="wind-label">
+                    Wind Gust
+                </div>
+
+                <div
+                    class="wind-value"
+                    id="windGustValue"
+                >
+                    32
+                </div>
+
+                <div class="wind-unit">
+                    Kilometers per hour (km/h)
+                </div>
+
+                <div class="code-note">
+                    Code editable only
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- WIND DIRECTION -->
+
+        <div class="wind-info">
+
+            <div class="wind-icon">
+                🌬️
+            </div>
+
+
+            <div class="wind-content">
+
+                <div class="wind-label">
+                    Wind Direction
+                </div>
+
+                <div
+                    class="wind-value"
+                    id="windDirectionValue"
+                >
+                    WEST
+                </div>
+
+                <div class="wind-unit">
+                    Cardinal direction
+                </div>
+
+                <div class="code-note">
+                    Code editable only
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     AQI SCALE
+===================================================== -->
+
+<section class="scale-card">
+
+
+    <div class="scale-title">
+        Air Quality Classification
+    </div>
+
+
+    <div class="scale">
+
+
+        <div class="scale-item green">
+            0–50
+            <br>
+            GOOD
+        </div>
+
+
+        <div class="scale-item yellow">
+            51–100
+            <br>
+            MODERATE
+        </div>
+
+
+        <div class="scale-item orange">
+            101–150
+            <br>
+            UNHEALTHY
+            <br>
+            FOR SENSITIVE
+        </div>
+
+
+        <div class="scale-item red">
+            151–200
+            <br>
+            UNHEALTHY
+        </div>
+
+
+        <div class="scale-item violet">
+            201–300
+            <br>
+            VERY
+            <br>
+            UNHEALTHY
+        </div>
+
+
+        <div class="scale-item black">
+            301–500
+            <br>
+            HAZARDOUS
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     INFORMATION
+===================================================== -->
+
+<section class="info-grid">
+
+
+    <div class="info-card">
+
+        <div class="info-icon">
+            🫁
+        </div>
+
+        <h4>
+            Health Guidance
+        </h4>
+
+        <p id="healthAdvice">
+            Most people can continue normal outdoor activities.
+        </p>
+
+    </div>
+
+
+
+    <div class="info-card">
+
+        <div class="info-icon">
+            📍
+        </div>
+
+        <h4>
+            Monitoring Location
+        </h4>
+
+        <p>
+            Canlaon City
+            <br>
+            Negros Oriental, Philippines
+        </p>
+
+    </div>
+
+
+</section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    © 2026 Canlaon City Air Quality Dashboard
+
+    <br>
+
+    AQI values should be interpreted according to
+    the applicable official air-quality monitoring standard.
+
+</footer>
+
+
+
+<script>
+
+
+/* =====================================================
+   =====================================================
+   EDIT DASHBOARD VALUES HERE
+   =====================================================
+   ===================================================== */
+
+
+/*
+---------------------------------------------------------
+AIR QUALITY INDEX
+---------------------------------------------------------
+
+Example:
+let AQI = 52;
+
+Allowed:
+0 - 500
+*/
+
+let AQI = 52;
+
+
+
+/*
+---------------------------------------------------------
+WEATHER
+---------------------------------------------------------
+
+Available:
+
+"SUNNY"
+"PARTLY CLOUDY"
+"CLOUDY"
+"RAIN"
+
+Example:
+
+let WEATHER = "SUNNY";
+*/
+
+let WEATHER = "SUNNY";
+
+
+
+/*
+---------------------------------------------------------
+TEMPERATURE
+---------------------------------------------------------
+
+Example:
+
+let TEMPERATURE = 30;
+
+Unit:
+°C
+*/
+
+let TEMPERATURE = 30;
+
+
+
+/*
+---------------------------------------------------------
+RAINFALL
+---------------------------------------------------------
+
+Example:
+
+let RAINFALL = 0.9;
+
+Unit:
+mm
+*/
+
+let RAINFALL = 0.9;
+
+
+
+/*
+---------------------------------------------------------
+WIND GUST
+---------------------------------------------------------
+
+Example:
+
+let WIND_GUST = 32;
+
+Unit:
+km/h
+*/
+
+let WIND_GUST = 32;
+
+
+
+/*
+---------------------------------------------------------
+WIND DIRECTION
+---------------------------------------------------------
+
+Examples:
+
+"NORTH"
+"NORTHEAST"
+"EAST"
+"SOUTHEAST"
+"SOUTH"
+"SOUTHWEST"
+"WEST"
+"NORTHWEST"
+
+*/
+
+let WIND_DIRECTION = "WEST";
+
+
+
+/* =====================================================
+   DO NOT EDIT BELOW THIS LINE
+   ===================================================== */
+
+
+/* =====================================================
+   AQI CLASSIFICATION
+===================================================== */
+
+function getAQIInfo(aqi){
+
+
+    if(aqi <= 50){
+
+        return {
+
+            title:"Good",
+
+            status:"GOOD",
+
+            color:"#22c55e",
+
+            dark:"#15803d",
+
+            description:
+                "Air quality is satisfactory, and air pollution poses little or no risk.",
+
+            advice:
+                "Air quality is considered satisfactory. Most people can enjoy normal outdoor activities."
+
+        };
+
+    }
+
+
+
+    if(aqi <= 100){
+
+        return {
+
+            title:"Moderate",
+
+            status:"MODERATE",
+
+            color:"#facc15",
+
+            dark:"#ca8a04",
+
+            description:
+                "Air quality is acceptable. However, some pollutants may be a concern for a small number of unusually sensitive people.",
+
+            advice:
+                "Most people can continue normal outdoor activities. Unusually sensitive individuals should consider reducing prolonged or heavy outdoor exertion."
+
+        };
+
+    }
+
+
+
+    if(aqi <= 150){
+
+        return {
+
+            title:
+                "Unhealthy for Sensitive Groups",
+
+            status:
+                "SENSITIVE GROUPS",
+
+            color:"#f97316",
+
+            dark:"#c2410c",
+
+            description:
+                "Members of sensitive groups may experience health effects. The general public is less likely to be affected.",
+
+            advice:
+                "People with respiratory or heart conditions, children and older adults should consider reducing prolonged outdoor exertion."
+
+        };
+
+    }
+
+
+
+    if(aqi <= 200){
+
+        return {
+
+            title:"Unhealthy",
+
+            status:"UNHEALTHY",
+
+            color:"#ef4444",
+
+            dark:"#b91c1c",
+
+            description:
+                "Everyone may begin to experience health effects, while sensitive groups may experience more serious effects.",
+
+            advice:
+                "Sensitive groups should avoid prolonged outdoor exertion. The general public should consider reducing prolonged outdoor activity."
+
+        };
+
+    }
+
+
+
+    if(aqi <= 300){
+
+        return {
+
+            title:"Very Unhealthy",
+
+            status:"VERY UNHEALTHY",
+
+            color:"#8b5cf6",
+
+            dark:"#6d28d9",
+
+            description:
+                "Health alert: the risk of health effects is increased for everyone.",
+
+            advice:
+                "Everyone should avoid prolonged or heavy outdoor exertion and consider reducing outdoor activities."
+
+        };
+
+    }
+
+
+
+    return {
+
+        title:"Hazardous",
+
+        status:"HAZARDOUS",
+
+        color:"#111827",
+
+        dark:"#000000",
+
+        description:
+            "Health warning of emergency conditions. The entire population is more likely to be affected.",
+
+        advice:
+            "Everyone should avoid outdoor activity and remain indoors where possible. Follow official health and emergency guidance."
+
+    };
+
+}
+
+
+
+/* =====================================================
+   UPDATE AQI
+===================================================== */
+
+function updateAQI(){
+
+
+    const info =
+        getAQIInfo(AQI);
+
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--aqi-color",
+            info.color
+        );
+
+
+    document.documentElement
+        .style
+        .setProperty(
+            "--aqi-dark",
+            info.dark
+        );
+
+
+    document.getElementById(
+        "aqiDisplay"
+    ).textContent =
+        AQI;
+
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        info.status;
+
+
+    document.getElementById(
+        "descriptionTitle"
+    ).textContent =
+        info.title;
+
+
+    document.getElementById(
+        "descriptionText"
+    ).textContent =
+        info.description;
+
+
+    document.getElementById(
+        "healthAdvice"
+    ).textContent =
+        info.advice;
+
+}
+
+
+
+/* =====================================================
+   WEATHER
+===================================================== */
+
+function updateWeather(){
+
+
+    const icons = {
+
+        "SUNNY":
+            "☀️",
+
+        "PARTLY CLOUDY":
+            "⛅",
+
+        "CLOUDY":
+            "☁️",
+
+        "RAIN":
+            "🌧️"
+
+    };
+
+
+    const icon =
+        icons[WEATHER] ||
+        "🌤️";
+
+
+    document.getElementById(
+        "weatherIcon"
+    ).textContent =
+        icon;
+
+
+    document.getElementById(
+        "weatherHeaderIcon"
+    ).textContent =
+        icon;
+
+
+    document.getElementById(
+        "weatherValue"
+    ).textContent =
+        WEATHER;
+
+}
+
+
+
+/* =====================================================
+   TEMPERATURE
+===================================================== */
+
+function updateTemperature(){
+
+
+    document.getElementById(
+        "temperatureValue"
+    ).textContent =
+        TEMPERATURE;
+
+}
+
+
+
+/* =====================================================
+   RAINFALL
+===================================================== */
+
+function updateRainfall(){
+
+
+    document.getElementById(
+        "rainfallValue"
+    ).textContent =
+        RAINFALL;
+
+}
+
+
+
+/* =====================================================
+   WIND
+===================================================== */
+
+function updateWind(){
+
+
+    document.getElementById(
+        "windGustValue"
+    ).textContent =
+        WIND_GUST;
+
+
+    document.getElementById(
+        "windDirectionValue"
+    ).textContent =
+        WIND_DIRECTION;
+
+}
+
+
+
+/* =====================================================
+   LIVE DATE & TIME
+===================================================== */
+
+function updateDateTime(){
+
+
+    const now =
+        new Date();
+
+
+    const options = {
+
+        weekday:"long",
+
+        year:"numeric",
+
+        month:"long",
+
+        day:"numeric",
+
+        hour:"2-digit",
+
+        minute:"2-digit",
+
+        second:"2-digit",
+
+        hour12:true
+
+    };
+
+
+    document.getElementById(
+        "dateTime"
+    ).textContent =
+
+        now.toLocaleString(
+            "en-PH",
+            options
+        );
+
+}
+
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+updateAQI();
+
+updateWeather();
+
+updateTemperature();
+
+updateRainfall();
+
+updateWind();
+
+updateDateTime();
+
+
+
+/* =====================================================
+   CLOCK
+===================================================== */
+
+setInterval(
+    updateDateTime,
+    1000
+);
+
+
+</script>
+
+</body>
+
+</html>
