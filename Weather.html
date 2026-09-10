@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Canlaon City Weather & AQI Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #07111f;
+            --card: rgba(15, 29, 49, 0.88);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text: #f4f7fb;
+            --muted: #9eacbd;
+            --accent: #35b9ff;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(35, 151, 255, 0.14), transparent 32%),
+                radial-gradient(circle at bottom left, rgba(102, 54, 255, 0.10), transparent 35%),
+                var(--bg);
+            color: var(--text);
+            padding: 20px;
+        }
+
+        .container {
+            width: min(1180px, 100%);
+            margin: auto;
+        }
+
+        header {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            padding: 25px;
+            margin-bottom: 18px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: clamp(24px, 4vw, 40px);
+            letter-spacing: 0.5px;
+        }
+
+        .brand p {
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .live {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 13px;
+            border-radius: 999px;
+            background: rgba(36, 211, 126, 0.10);
+            border: 1px solid rgba(36, 211, 126, 0.28);
+            color: #63e7a2;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #35dc86;
+            box-shadow: 0 0 12px #35dc86;
+        }
+
+        .location {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255,255,255,0.07);
+            color: #c8d3df;
+        }
+
+        .location strong {
+            color: white;
+        }
+
+        .clock {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 22px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.20);
+            backdrop-filter: blur(12px);
+        }
+
+        .card.full {
+            grid-column: 1 / -1;
+        }
+
+        .card-title {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .aqi-value {
+            font-size: clamp(64px, 12vw, 108px);
+            line-height: 0.9;
+            font-weight: 900;
+            transition: 0.3s ease;
+        }
+
+        .aqi-label {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 13px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 900;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .aqi-description {
+            margin-top: 15px;
+            color: #c3cfdd;
+            line-height: 1.6;
+        }
+
+        .aqi-scale {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .scale-item {
+            height: 9px;
+            border-radius: 99px;
+        }
+
+        .scale-labels {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            margin-top: 7px;
+            font-size: 9px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .weather-main {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .weather-icon {
+            font-size: 62px;
+        }
+
+        .weather-condition {
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .temperature {
+            margin-top: 5px;
+            font-size: 44px;
+            font-weight: 900;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .detail {
+            padding: 13px;
+            border-radius: 13px;
+            background: rgba(255,255,255,0.045);
+        }
+
+        .detail span {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .detail strong {
+            font-size: 15px;
+        }
+
+        .warnings-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .warning {
+            border-radius: 15px;
+            padding: 16px;
+            border-left: 6px solid currentColor;
+            background: rgba(255,255,255,0.045);
+        }
+
+        .warning-head {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .warning-icon {
+            font-size: 25px;
+        }
+
+        .warning-label {
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .warning-title {
+            margin-top: 2px;
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .warning-description {
+            margin-top: 10px;
+            color: #c1cedc;
+            line-height: 1.55;
+            font-size: 13px;
+        }
+
+        .no-warning {
+            padding: 18px;
+            text-align: center;
+            border-radius: 14px;
+            color: #76e3a5;
+            background: rgba(45, 211, 120, 0.08);
+            border: 1px solid rgba(45, 211, 120, 0.18);
+            font-weight: 800;
+        }
+
+        .warning-blue {
+            color: #269bff;
+        }
+
+        .warning-yellow {
+            color: #ffd83d;
+        }
+
+        .warning-orange {
+            color: #ff9d3c;
+        }
+
+        .warning-red {
+            color: #ff4d5f;
+        }
+
+        .warning-violet {
+            color: #c875ff;
+        }
+
+        .warning-sky-blue {
+            color: #65d9ff;
+        }
+
+        .warning-light-violet {
+            color: #c99cff;
+        }
+
+        .electricity-red {
+            color: #ff4659;
+        }
+
+        .electricity-yellow {
+            color: #ffd43b;
+        }
+
+        .brownout {
+            margin-top: 15px;
+            padding: 16px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.045);
+        }
+
+        .brownout-title {
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 0.7px;
+            margin-bottom: 12px;
+        }
+
+        .schedule {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .schedule-box {
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .schedule-box span {
+            display: block;
+            color: var(--muted);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .schedule-box strong {
+            display: block;
+            margin-top: 6px;
+            font-size: 17px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #718095;
+            font-size: 11px;
+            line-height: 1.6;
+            padding: 25px 10px 10px;
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 10px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card.full {
+                grid-column: auto;
+            }
+
+            .header-top {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .aqi-scale {
+                gap: 3px;
+            }
+
+            .schedule {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+
+            <div class="header-top">
+
+                <div class="brand">
+                    <h1>WEATHER & AIR QUALITY</h1>
+                    <p>Real-Time Environmental Dashboard</p>
+                </div>
+
+                <div class="live">
+                    <span class="live-dot"></span>
+                    LIVE DASHBOARD
+                </div>
+
+            </div>
+
+            <div class="location">
+                📍 <strong id="locationText">Canlaon City, Negros Oriental, Philippines</strong>
+                <div class="clock" id="philippineTime">
+                    Loading Philippine Time...
+                </div>
+            </div>
+
+        </header>
+
+
+        <main class="grid">
+
+            <!-- AQI -->
+
+            <section class="card">
+
+                <div class="card-title">
+                    Air Quality Index
+                </div>
+
+                <div id="aqiValue" class="aqi-value">
+                    --
+                </div>
+
+                <div id="aqiLabel" class="aqi-label">
+                    Loading...
+                </div>
+
+                <p id="aqiDescription" class="aqi-description">
+                    Loading air quality information...
+                </p>
+
+                <div class="aqi-scale">
+
+                    <div class="scale-item" style="background:#32c96b;"></div>
+                    <div class="scale-item" style="background:#e4d33c;"></div>
+                    <div class="scale-item" style="background:#ff9d35;"></div>
+                    <div class="scale-item" style="background:#f04755;"></div>
+                    <div class="scale-item" style="background:#a34be8;"></div>
+                    <div class="scale-item" style="background:#7e1820;"></div>
+
+                </div>
+
+                <div class="scale-labels">
+                    <span>0–50</span>
+                    <span>51–100</span>
+                    <span>101–150</span>
+                    <span>151–200</span>
+                    <span>201–300</span>
+                    <span>301–500</span>
+                </div>
+
+            </section>
+
+
+            <!-- WEATHER -->
+
+            <section class="card">
+
+                <div class="card-title">
+                    Weather Conditions
+                </div>
+
+                <div class="weather-main">
+
+                    <div id="weatherIcon" class="weather-icon">
+                        ⛅
+                    </div>
+
+                    <div>
+                        <div id="weatherCondition" class="weather-condition">
+                            PARTLY CLOUDY
+                        </div>
+
+                        <div id="temperature" class="temperature">
+                            24°C
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="weather-details">
+
+                    <div class="detail">
+                        <span>RAINFALL</span>
+                        <strong id="rainfall">
+                            0.0 mm
+                        </strong>
+                    </div>
+
+                    <div class="detail">
+                        <span>WIND GUST</span>
+                        <strong id="windGust">
+                            27 km/h
+                        </strong>
+                    </div>
+
+                    <div class="detail">
+                        <span>WIND DIRECTION</span>
+                        <strong id="windDirection">
+                            SOUTHWEST
+                        </strong>
+                    </div>
+
+                    <div class="detail">
+                        <span>STATUS</span>
+                        <strong>MONITORING</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- WARNINGS -->
+
+            <section class="card full">
+
+                <div class="card-title">
+                    Active Warnings & Advisories
+                </div>
+
+                <div id="warningsList" class="warnings-list">
+                    Loading warnings...
+                </div>
+
+            </section>
+
+
+            <!-- ELECTRICITY -->
+
+            <section class="card full">
+
+                <div class="card-title">
+                    Electricity Advisory
+                </div>
+
+                <div id="electricityAlert">
+                    Loading electricity advisory...
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <footer class="footer">
+
+            <div>
+                CANLAON CITY WEATHER & AIR QUALITY DASHBOARD
+            </div>
+
+            <div>
+                Data displayed on this dashboard should be verified against
+                official advisories from relevant authorities.
+            </div>
+
+        </footer>
+
+    </div>
+
+
+    <script>
+
+        /* ============================================================
+           CODE-EDITABLE SETTINGS
+           Edit values ONLY inside this section.
+           ============================================================ */
+
+        const CONFIG = {
+
+            location: {
+
+                city: "Canlaon City",
+
+                province: "Negros Oriental",
+
+                country: "Philippines"
+
+            },
+
+
+            aqi: {
+
+                value: 52
+
+            },
+
+
+            weather: {
+
+                condition: "PARTLY CLOUDY",
+
+                temperature: 24,
+
+                rainfall: 0.0,
+
+                icons: {
+
+                    "SUNNY": "☀️",
+
+                    "PARTLY CLOUDY": "⛅",
+
+                    "CLOUDY": "☁️",
+
+                    "RAIN": "🌧️",
+
+                    "HEAVY RAIN": "🌧️",
+
+                    "THUNDERSTORM": "⛈️",
+
+                    "FOGGY": "🌫️",
+
+                    "WINDY": "💨"
+
+                }
+
+            },
+
+
+            wind: {
+
+                gust: 27,
+
+                direction: "SOUTHWEST"
+
+            },
+
+
+            warnings: {
+
+                /* Signal number:
+                   0 = OFF
+                   1 = BLUE
+                   2 = YELLOW
+                   3 = ORANGE
+                   4 = RED
+                   5 = VIOLET
+                */
+
+                signalNumber: 2,
+
+
+                /* Rainfall warning:
+                   "NONE"
+                   "EXPECTING"
+                   "AFFECTING"
+                   "YELLOW"
+                   "ORANGE"
+                   "RED"
+                */
+
+                rainfallWarning: "EXPECTING",
+
+
+                /* TRUE = ONGOING
+                   FALSE = INACTIVE
+                */
+
+                ashEmission: true,
+
+                volcanicEruption: false,
+
+
+                signal: {
+
+                    1: {
+
+                        colorClass: "warning-blue",
+
+                        label: "BLUE",
+
+                        title: "SIGNAL NO. 1",
+
+                        icon: "⚠️",
+
+                        description:
+                            "Signal No. 1 is currently active. Monitor official advisories and prepare for possible changes in conditions."
+
+                    },
+
+
+                    2: {
+
+                        colorClass: "warning-yellow",
+
+                        label: "YELLOW",
+
+                        title: "SIGNAL NO. 2",
+
+                        icon: "⚠️",
+
+                        description:
+                            "Signal No. 2 is currently active. Exercise caution and closely monitor official weather and safety advisories."
+
+                    },
+
+
+                    3: {
+
+                        colorClass: "warning-orange",
+
+                        label: "ORANGE",
+
+                        title: "SIGNAL NO. 3",
+
+                        icon: "⚠️",
+
+                        description:
+                            "Signal No. 3 is currently active. Dangerous conditions may occur. Follow official instructions and prepare for possible evacuation."
+
+                    },
+
+
+                    4: {
+
+                        colorClass: "warning-red",
+
+                        label: "RED",
+
+                        title: "SIGNAL NO. 4",
+
+                        icon: "🚨",
+
+                        description:
+                            "Signal No. 4 is currently active. Extremely dangerous conditions may occur. Follow official emergency instructions immediately."
+
+                    },
+
+
+                    5: {
+
+                        colorClass: "warning-violet",
+
+                        label: "VIOLET",
+
+                        title: "SIGNAL NO. 5",
+
+                        icon: "🚨",
+
+                        description:
+                            "Signal No. 5 is currently active. Catastrophic conditions may occur. Follow official emergency instructions immediately."
+
+                    }
+
+                },
+
+
+                rainfall: {
+
+                    EXPECTING: {
+
+                        colorClass: "warning-sky-blue",
+
+                        label: "SKY BLUE",
+
+                        title: "EXPECTING RAINFALL",
+
+                        icon: "🌧️",
+
+                        description:
+                            "Rainfall is expected in the area. Monitor weather updates and prepare for possible changes in conditions."
+
+                    },
+
+
+                    AFFECTING: {
+
+                        colorClass: "warning-light-violet",
+
+                        label: "LIGHT VIOLET",
+
+                        title: "AFFECTING RAINFALL",
+
+                        icon: "🌧️",
+
+                        description:
+                            "Rainfall is currently affecting the area. Monitor possible impacts and follow official weather advisories."
+
+                    },
+
+
+                    YELLOW: {
+
+                        colorClass: "warning-yellow",
+
+                        label: "YELLOW",
+
+                        title: "YELLOW RAINFALL WARNING",
+
+                        icon: "🌧️",
+
+                        description:
+                            "Moderate to heavy rainfall may occur. Monitor possible flooding and landslides, especially in vulnerable areas."
+
+                    },
+
+
+                    ORANGE: {
+
+                        colorClass: "warning-orange",
+
+                        label: "ORANGE",
+
+                        title: "ORANGE RAINFALL WARNING",
+
+                        icon: "🌧️",
+
+                        description:
+                            "Heavy rainfall may cause flooding and landslides. Residents in vulnerable areas should remain alert."
+
+                    },
+
+
+                    RED: {
+
+                        colorClass: "warning-red",
+
+                        label: "RED",
+
+                        title: "RED RAINFALL WARNING",
+
+                        icon: "🌧️",
+
+                        description:
+                            "Torrential rainfall may cause serious flooding and landslides. Follow official emergency advisories."
+
+                    }
+
+                },
+
+
+                ashEmissionInfo: {
+
+                    colorClass: "warning-orange",
+
+                    label: "ORANGE",
+
+                    title: "ASH EMISSION",
+
+                    icon: "🌋",
+
+                    description:
+                        "Ongoing ash emission detected. Ashfall may affect nearby areas. Protect the eyes and respiratory system and monitor official volcanic advisories."
+
+                },
+
+
+                volcanicEruptionInfo: {
+
+                    colorClass: "warning-red",
+
+                    label: "RED",
+
+                    title: "VOLCANIC ERUPTION",
+
+                    icon: "🌋",
+
+                    description:
+                        "Ongoing volcanic eruption is indicated. Follow official evacuation and safety instructions immediately."
+
+                }
+
+            },
+
+
+            electricity: {
+
+                /* "NONE"
+                   "YELLOW"
+                   "RED"
+                */
+
+                alert: "RED",
+
+
+                redAlert: {
+
+                    colorClass: "electricity-red",
+
+                    label: "RED ALERT",
+
+                    title: "RED ALERT",
+
+                    icon: "⚡",
+
+                    description:
+                        "Power supply conditions are critical. Rotational brownouts may be implemented. Please conserve electricity and monitor official power advisories."
+
+                },
+
+
+                yellowAlert: {
+
+                    colorClass: "electricity-yellow",
+
+                    label: "YELLOW ALERT",
+
+                    title: "YELLOW ALERT",
+
+                    icon: "⚡",
+
+                    description:
+                        "Power supply conditions require close monitoring. Rotational brownouts may be possible. Please conserve electricity."
+
+                },
+
+
+                rotationalBrownout: {
+
+                    enabled: true,
+
+                    time: "1:00 PM – 3:00 PM",
+
+                    secondRoundTime: "7:00 PM – 9:00 PM"
+
+                }
+
+            }
+
+        };
+
+
+        /* ============================================================
+           AUTOMATIC AQI
+           ============================================================ */
+
+        function updateAQI() {
+
+            const value = Number(CONFIG.aqi.value);
+
+            const valueElement = document.getElementById("aqiValue");
+
+            const labelElement = document.getElementById("aqiLabel");
+
+            const descriptionElement =
+                document.getElementById("aqiDescription");
+
+
+            let label = "";
+
+            let description = "";
+
+            let color = "";
+
+
+            if (value <= 50) {
+
+                label = "GOOD";
+
+                description =
+                    "Air quality is satisfactory, and air pollution poses little or no risk.";
+
+                color = "#32c96b";
+
+            }
+
+            else if (value <= 100) {
+
+                label = "MODERATE";
+
+                description =
+                    "Air quality is acceptable. However, unusually sensitive people may experience minor health effects.";
+
+                color = "#e4d33c";
+
+            }
+
+            else if (value <= 150) {
+
+                label = "UNHEALTHY FOR SENSITIVE GROUPS";
+
+                description =
+                    "Members of sensitive groups may experience health effects. The general public is less likely to be affected.";
+
+                color = "#ff9d35";
+
+            }
+
+            else if (value <= 200) {
+
+                label = "UNHEALTHY";
+
+                description =
+                    "Everyone may begin to experience health effects. Sensitive groups may experience more serious effects.";
+
+                color = "#f04755";
+
+            }
+
+            else if (value <= 300) {
+
+                label = "VERY UNHEALTHY";
+
+                description =
+                    "Health alert: the risk of health effects is increased for everyone.";
+
+                color = "#a34be8";
+
+            }
+
+            else {
+
+                label = "HAZARDOUS";
+
+                description =
+                    "Health warning of emergency conditions. The entire population is more likely to be affected.";
+
+                color = "#9b2630";
+
+            }
+
+
+            valueElement.textContent = value;
+
+            valueElement.style.color = color;
+
+            valueElement.style.textShadow =
+                `0 0 28px ${color}`;
+
+            labelElement.textContent = label;
+
+            labelElement.style.color = color;
+
+            descriptionElement.textContent = description;
+
+        }
+
+
+        /* ============================================================
+           AUTOMATIC WEATHER
+           ============================================================ */
+
+        function updateWeather() {
+
+            const condition =
+                CONFIG.weather.condition.toUpperCase();
+
+
+            const icon =
+                CONFIG.weather.icons[condition] || "🌤️";
+
+
+            document.getElementById("weatherIcon").textContent = icon;
+
+            document.getElementById("weatherCondition").textContent =
+                condition;
+
+            document.getElementById("temperature").textContent =
+                `${CONFIG.weather.temperature}°C`;
+
+            document.getElementById("rainfall").textContent =
+                `${CONFIG.weather.rainfall} mm`;
+
+            document.getElementById("windGust").textContent =
+                `${CONFIG.wind.gust} km/h`;
+
+            document.getElementById("windDirection").textContent =
+                CONFIG.wind.direction;
+
+        }
+
+
+        /* ============================================================
+           WARNING CREATOR
+           ============================================================ */
+
+        function createWarning(data) {
+
+            return `
+
+                <div class="warning ${data.colorClass}">
+
+                    <div class="warning-head">
+
+                        <div class="warning-icon">
+                            ${data.icon}
+                        </div>
+
+                        <div>
+
+                            <div class="warning-label">
+                                ${data.label}
+                            </div>
+
+                            <div class="warning-title">
+                                ${data.title}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="warning-description">
+                        ${data.description}
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* ============================================================
+           WARNINGS
+           ============================================================ */
+
+        function updateWarnings() {
+
+            const list =
+                document.getElementById("warningsList");
+
+            const activeWarnings = [];
+
+
+            const signalNumber =
+                Number(CONFIG.warnings.signalNumber);
+
+
+            if (
+                signalNumber >= 1 &&
+                signalNumber <= 5 &&
+                CONFIG.warnings.signal[signalNumber]
+            ) {
+
+                activeWarnings.push(
+                    CONFIG.warnings.signal[signalNumber]
+                );
+
+            }
+
+
+            const rainfallWarning =
+                CONFIG.warnings.rainfallWarning;
+
+
+            if (
+                rainfallWarning !== "NONE" &&
+                CONFIG.warnings.rainfall[rainfallWarning]
+            ) {
+
+                activeWarnings.push(
+                    CONFIG.warnings.rainfall[rainfallWarning]
+                );
+
+            }
+
+
+            if (CONFIG.warnings.ashEmission === true) {
+
+                activeWarnings.push(
+                    CONFIG.warnings.ashEmissionInfo
+                );
+
+            }
+
+
+            if (CONFIG.warnings.volcanicEruption === true) {
+
+                activeWarnings.push(
+                    CONFIG.warnings.volcanicEruptionInfo
+                );
+
+            }
+
+
+            if (activeWarnings.length === 0) {
+
+                list.innerHTML = `
+                    <div class="no-warning">
+                        ✓ NO ACTIVE WEATHER OR VOLCANIC WARNING
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            list.innerHTML =
+                activeWarnings
+                    .map(createWarning)
+                    .join("");
+
+        }
+
+
+        /* ============================================================
+           ELECTRICITY ADVISORY
+           ============================================================ */
+
+        function updateElectricity() {
+
+            const container =
+                document.getElementById("electricityAlert");
+
+
+            const alertType =
+                CONFIG.electricity.alert;
+
+
+            if (alertType === "NONE") {
+
+                container.innerHTML = `
+
+                    <div class="no-warning">
+                        ✓ NO ACTIVE ELECTRICITY ALERT
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            let data = null;
+
+
+            if (alertType === "RED") {
+
+                data = CONFIG.electricity.redAlert;
+
+            }
+
+            else if (alertType === "YELLOW") {
+
+                data = CONFIG.electricity.yellowAlert;
+
+            }
+
+
+            if (!data) {
+
+                container.innerHTML = `
+                    <div class="no-warning">
+                        ✓ NO ACTIVE ELECTRICITY ALERT
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            let html = createWarning(data);
+
+
+            if (
+                CONFIG.electricity.rotationalBrownout.enabled
+            ) {
+
+                html += `
+
+                    <div class="brownout">
+
+                        <div class="brownout-title">
+                            ⚡ ROTATIONAL BROWN OUT
+                        </div>
+
+                        <div class="schedule">
+
+                            <div class="schedule-box">
+
+                                <span>
+                                    Time
+                                </span>
+
+                                <strong>
+                                    ${CONFIG.electricity.rotationalBrownout.time}
+                                </strong>
+
+                            </div>
+
+
+                            <div class="schedule-box">
+
+                                <span>
+                                    Second Round
+                                </span>
+
+                                <strong>
+                                    ${CONFIG.electricity.rotationalBrownout.secondRoundTime}
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+
+
+            container.innerHTML = html;
+
+        }
+
+
+        /* ============================================================
+           PHILIPPINE TIME
+           ============================================================ */
+
+        function updatePhilippineTime() {
+
+            const now = new Date();
+
+
+            const dateText =
+                new Intl.DateTimeFormat(
+                    "en-PH",
+                    {
+                        timeZone: "Asia/Manila",
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                    }
+                ).format(now);
+
+
+            const timeText =
+                new Intl.DateTimeFormat(
+                    "en-PH",
+                    {
+                        timeZone: "Asia/Manila",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                        hour12: true
+                    }
+                ).format(now);
+
+
+            document.getElementById("philippineTime").textContent =
+                `${dateText} • ${timeText} PHT`;
+
+        }
+
+
+        /* ============================================================
+           LOCATION
+           ============================================================ */
+
+        function updateLocation() {
+
+            const text =
+                `${CONFIG.location.city}, ` +
+                `${CONFIG.location.province}, ` +
+                `${CONFIG.location.country}`;
+
+
+            document.getElementById("locationText").textContent =
+                text;
+
+        }
+
+
+        /* ============================================================
+           INITIALIZE DASHBOARD
+           ============================================================ */
+
+        updateLocation();
+
+        updateAQI();
+
+        updateWeather();
+
+        updateWarnings();
+
+        updateElectricity();
+
+        updatePhilippineTime();
+
+
+        /* Update Philippine time every second. */
+
+        setInterval(
+            updatePhilippineTime,
+            1000
+        );
+
+    </script>
+
+</body>
+</html>
