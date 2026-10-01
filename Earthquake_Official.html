@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
+<title>Kanlaon Volcano | Earthquake Monitor</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:
+        radial-gradient(circle at 50% -10%,#173451 0%,#081321 42%,#040a12 100%);
+    color:#fff;
+    min-height:100vh;
+}
+
+.container{
+    width:min(980px,94%);
+    margin:auto;
+    padding:22px 0 35px;
+}
+
+/* HEADER */
+.header{
+    position:relative;
+    overflow:hidden;
+    padding:30px 24px;
+    border:1px solid #203a55;
+    border-radius:24px;
+    background:rgba(10,25,41,.92);
+    box-shadow:0 18px 55px rgba(0,0,0,.35);
+}
+
+.topline{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.live{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 13px;
+    border-radius:30px;
+    background:#09291c;
+    color:#4df18b;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:1.5px;
+}
+
+.live-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#35ed7c;
+    box-shadow:0 0 12px #35ed7c;
+    animation:pulse 1.3s infinite;
+}
+
+@keyframes pulse{
+    50%{opacity:.35;transform:scale(.7)}
+}
+
+.badge{
+    color:#8fa8c0;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+h1{
+    margin:25px 0 6px;
+    font-size:clamp(30px,7vw,58px);
+    line-height:1;
+    letter-spacing:1px;
+}
+
+.subtitle{
+    margin:0;
+    color:#9eb4c9;
+    font-size:15px;
+}
+
+.location{
+    margin-top:10px;
+    color:#7089a1;
+    font-size:13px;
+}
+
+/* CLOCK */
+.clock{
+    margin-top:16px;
+    padding:19px 22px;
+    border:1px solid #1c344d;
+    border-radius:18px;
+    background:#091827;
+    text-align:center;
+}
+
+.clock-label{
+    color:#7189a0;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:1.4px;
+}
+
+#liveTime{
+    margin-top:6px;
+    font-size:clamp(27px,6vw,40px);
+    font-weight:850;
+}
+
+#liveDate{
+    margin-top:4px;
+    color:#a0b4c7;
+    font-size:13px;
+}
+
+/* MAIN COUNTER */
+.counter{
+    margin-top:16px;
+    text-align:center;
+    padding:45px 20px 38px;
+    border-radius:26px;
+    background:linear-gradient(145deg,#102b45,#091725);
+    border:1px solid #285170;
+    box-shadow:0 20px 55px rgba(0,0,0,.35);
+}
+
+.counter-title{
+    color:#8da7be;
+    font-size:12px;
+    font-weight:850;
+    letter-spacing:2px;
+}
+
+.number{
+    margin:17px 0 5px;
+    font-size:clamp(95px,22vw,175px);
+    line-height:.85;
+    font-weight:950;
+    letter-spacing:-7px;
+    text-shadow:0 5px 30px rgba(0,0,0,.35);
+}
+
+.number-label{
+    color:#8ca5ba;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+.status{
+    display:inline-flex;
+    margin-top:18px;
+    padding:8px 14px;
+    border-radius:20px;
+    background:#0b3422;
+    color:#4cf18a;
+    font-size:10px;
+    font-weight:850;
+    letter-spacing:1.2px;
+}
+
+/* INFO */
+.info-grid{
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.info{
+    padding:21px 15px;
+    border:1px solid #1b334b;
+    border-radius:18px;
+    background:#091827;
+}
+
+.info-icon{
+    font-size:20px;
+}
+
+.info-title{
+    margin-top:10px;
+    color:#637c94;
+    font-size:9px;
+    font-weight:850;
+    letter-spacing:1.3px;
+}
+
+.info-value{
+    margin-top:6px;
+    font-size:15px;
+    font-weight:800;
+}
+
+/* MONITORING NOTE */
+.note{
+    margin-top:16px;
+    padding:20px;
+    border:1px solid #1b334b;
+    border-radius:18px;
+    background:#091827;
+    text-align:center;
+}
+
+.note-title{
+    font-size:13px;
+    font-weight:850;
+}
+
+.note-text{
+    margin-top:7px;
+    color:#8299ad;
+    font-size:12px;
+    line-height:1.6;
+}
+
+footer{
+    margin-top:22px;
+    text-align:center;
+    color:#536b81;
+    font-size:10px;
+    line-height:1.7;
+}
+
+footer strong{
+    color:#718ba1;
+}
+
+@media(max-width:650px){
+    .container{
+        width:94%;
+        padding-top:15px;
+    }
+
+    .header{
+        padding:24px 18px;
+    }
+
+    .badge{
+        display:none;
+    }
+
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+
+    .counter{
+        padding:40px 15px 34px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+
+        <div class="topline">
+
+            <div class="live">
+                <span class="live-dot"></span>
+                LIVE MONITORING
+            </div>
+
+            <div class="badge">
+                PHT • UTC+8
+            </div>
+
+        </div>
+
+        <h1>KANLAON VOLCANO</h1>
+
+        <p class="subtitle">
+            Earthquake Monitoring Dashboard
+        </p>
+
+        <div class="location">
+            Canlaon City • Negros Island • Philippines
+        </div>
+
+    </header>
+
+
+    <!-- PHILIPPINE TIME -->
+    <section class="clock">
+
+        <div class="clock-label">
+            PHILIPPINE STANDARD TIME
+        </div>
+
+        <div id="liveTime">
+            --:--:--
+        </div>
+
+        <div id="liveDate">
+            Loading...
+        </div>
+
+    </section>
+
+
+    <!-- EARTHQUAKE COUNTER -->
+    <main class="counter">
+
+        <div class="counter-title">
+            TOTAL EARTHQUAKES
+        </div>
+
+        <div class="number" id="totalEarthquakes">
+            0
+        </div>
+
+        <div class="number-label">
+            EARTHQUAKES RECORDED
+        </div>
+
+        <div class="status">
+            ● LIVE MONITORING
+        </div>
+
+    </main>
+
+
+    <!-- INFORMATION -->
+    <section class="info-grid">
+
+        <div class="info">
+
+            <div class="info-icon">🌋</div>
+
+            <div class="info-title">
+                EARTHQUAKE TYPE
+            </div>
+
+            <div class="info-value">
+                Volcanic
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="info-icon">📍</div>
+
+            <div class="info-title">
+                MONITORING AREA
+            </div>
+
+            <div class="info-value">
+                Kanlaon
+            </div>
+
+        </div>
+
+
+        <div class="info">
+
+            <div class="info-icon">●</div>
+
+            <div class="info-title">
+                MONITORING STATUS
+            </div>
+
+            <div class="info-value">
+                ACTIVE
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- NOTE -->
+    <section class="note">
+
+        <div class="note-title">
+            EARTHQUAKE COUNT
+        </div>
+
+        <div class="note-text">
+            The earthquake total is manually editable in the HTML code.
+            There are no buttons, automatic counting, or automatic reset.
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <strong>
+            KANLAON VOLCANO EARTHQUAKE MONITOR
+        </strong>
+
+        <br>
+
+        Earthquake monitoring dashboard
+
+        <br>
+
+        Source: PHIVOLCS
+
+        <br>
+
+        Time Zone: Philippine Standard Time (UTC+8)
+
+        <br>
+
+        Refer to official PHIVOLCS bulletins and advisories
+        for verified information.
+
+    </footer>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   EDITABLE EARTHQUAKE TOTAL
+   =========================================================
+
+   CHANGE ONLY THE NUMBER BELOW.
+
+   Example:
+
+   const TOTAL_EARTHQUAKES = 15;
+
+   ========================================================= */
+
+const TOTAL_EARTHQUAKES = 0;
+
+
+/* =========================================================
+   DISPLAY EARTHQUAKE TOTAL
+   ========================================================= */
+
+document.getElementById(
+    "totalEarthquakes"
+).textContent = TOTAL_EARTHQUAKES;
+
+
+/* =========================================================
+   PHILIPPINE STANDARD TIME
+   ========================================================= */
+
+function updatePhilippineTime(){
+
+    const now = new Date();
+
+
+    const timeOptions = {
+
+        timeZone: "Asia/Manila",
+
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+
+        hour12: true
+
+    };
+
+
+    const dateOptions = {
+
+        timeZone: "Asia/Manila",
+
+        weekday: "long",
+
+        year: "numeric",
+
+        month: "long",
+
+        day: "numeric"
+
+    };
+
+
+    const time =
+        new Intl.DateTimeFormat(
+            "en-PH",
+            timeOptions
+        ).format(now);
+
+
+    const date =
+        new Intl.DateTimeFormat(
+            "en-PH",
+            dateOptions
+        ).format(now);
+
+
+    document.getElementById(
+        "liveTime"
+    ).textContent = time;
+
+
+    document.getElementById(
+        "liveDate"
+    ).textContent = date;
+
+}
+
+
+/* =========================================================
+   START CLOCK
+   ========================================================= */
+
+updatePhilippineTime();
+
+
+/* =========================================================
+   UPDATE CLOCK EVERY SECOND
+   ========================================================= */
+
+setInterval(
+    updatePhilippineTime,
+    1000
+);
+
+</script>
+
+</body>
+</html>
