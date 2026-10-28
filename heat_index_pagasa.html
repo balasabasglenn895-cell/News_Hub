@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>PAGASA Heat Index Calculator</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#121e30;--text:#f3f7fc;--muted:#9fb0c6;--line:#2a3b52;--accent:#ff9f43}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top right,#20354d 0,transparent 38%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;padding:24px 14px 36px}
+.wrap{max-width:940px;margin:auto}.top{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.logo{width:54px;height:54px;border-radius:16px;background:linear-gradient(145deg,#ffca65,#ff7b35);display:grid;place-items:center;color:#172033;flex-shrink:0;font-size:28px}
+.eyebrow{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:4px}
+h1{font-size:clamp(24px,4vw,34px);line-height:1.12;margin:0} .sub{color:var(--muted);font-size:14px;margin-top:7px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:linear-gradient(180deg,#142238,#101a2a);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 18px 50px #0002}
+h2{font-size:17px;margin:0 0 6px}.help{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 22px}
+.field{margin-bottom:18px}label{display:block;font-size:13px;color:#d5e0ed;font-weight:650;margin-bottom:8px}
+input{width:100%;padding:14px;border:1px solid #344961;border-radius:12px;background:#0b1524;color:var(--text);font-size:16px;outline:none}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #ff9f4320}.unit{color:var(--muted);font-size:12px;margin-top:6px}
+.actions{display:flex;gap:10px;margin-top:24px}button{border:0;border-radius:12px;padding:13px 18px;font-size:14px;font-weight:800;cursor:pointer}
+.primary{background:linear-gradient(100deg,#ffbf5b,#ff873b);color:#192335;flex:1}.secondary{background:#25364b;color:#e7eef7}.pdf-button{background:linear-gradient(100deg,#3dd6b5,#1ba98c);color:#062b27;white-space:nowrap}
+.result{display:flex;flex-direction:column}.result-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pill{font-size:11px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;padding:7px 10px;border-radius:999px;background:#26384d;color:#c5d5e8}
+.location{color:var(--muted);font-size:13px;margin-top:5px;overflow-wrap:anywhere}.number{font-size:clamp(54px,8vw,76px);letter-spacing:-3px;line-height:1;font-weight:850;margin:28px 0 8px}
+.number span{font-size:25px;letter-spacing:0;color:#c4d2e2}.feels{color:var(--muted);font-size:14px}
+.status{margin-top:22px;padding:15px 16px;border-radius:14px;border:1px solid #ffffff20;background:#ffffff08}.status strong{display:block;font-size:17px;margin-bottom:5px}.status p{margin:0;font-size:13px;line-height:1.55;color:#e4edf7}
+.bar{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:22px}.segment{height:7px;border-radius:99px;background:#34445a}
+.segment.active{outline:2px solid #fff;outline-offset:2px}.scale-labels{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+.scale-labels div{font-size:10px;line-height:1.3;color:var(--muted)}.scale-labels strong{display:block;font-size:11px;color:#e7edf5;margin-bottom:3px}
+.disclaimer{margin-top:18px;color:#92a5bc;font-size:12px;line-height:1.6}.footer{margin-top:18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#8295ac;font-size:12px}
+a{color:#ffc16e}.error{color:#ff9c91;font-size:12px;margin-top:8px;display:none}
+@media(max-width:720px){body{padding:18px 12px 28px}.grid{grid-template-columns:1fr}.card{padding:20px}.number{margin-top:22px}}
+@page{size:A4;margin:14mm 15mm 16mm}
+@media print{
+  /* PDF output: show only the Calculated Result card. */
+  body:before,.top,.report-meta,main.grid>section:first-child,.footer,.report-note{display:none!important}
+  .wrap{max-width:none!important;width:100%!important;margin:0!important;padding:0!important}
+  .grid{display:block!important}
+  main.grid>section.result{display:flex!important;width:100%!important;min-height:0!important;margin:0!important;padding:28px!important;background:#fff!important;color:#15263b!important;border:1px solid #d5deea!important;border-top:5px solid #10243b!important;border-radius:12px!important;box-shadow:none!important;break-inside:avoid!important;page-break-inside:avoid!important}
+  :root{color-scheme:light}
+  html,body{background:#fff!important;color:#15263b!important;padding:0!important;margin:0!important;min-height:auto!important;font-family:Arial,Helvetica,sans-serif!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body:before{content:"PAGASA • HEAT SAFETY REPORT";display:block;background:#10243b!important;color:#fff!important;padding:10px 15px;font-size:9px;letter-spacing:2px;font-weight:800;border-bottom:4px solid #e9a23b}
+  .wrap{max-width:none;width:100%;margin:0 auto;padding-top:18px}
+  .top{gap:14px;padding:0 0 17px;margin:0 0 20px;border-bottom:1px solid #d6dee8;align-items:center}
+  .logo{width:48px;height:48px;border-radius:12px;background:#f4b544!important;color:#13263c!important;font-size:25px}
+  .eyebrow{font-size:8px;letter-spacing:2.2px;color:#a76512!important;margin-bottom:5px}
+  h1{font-size:25px;letter-spacing:-.5px;color:#12263e!important;line-height:1.15}
+  .sub{font-size:10px;color:#62738a!important;margin-top:5px}
+  .grid{grid-template-columns:1fr 1fr;gap:13px;align-items:stretch}
+  .card{background:#fff!important;color:#15263b!important;border:1px solid #d9e1ea;border-radius:9px;padding:17px;box-shadow:none!important;break-inside:avoid;page-break-inside:avoid}
+  .card:first-child{background:#f7f9fc!important}
+  h2{font-size:12px;letter-spacing:.1px;color:#162b43!important;margin:0 0 7px}
+  .help{font-size:9px;line-height:1.55;color:#62738a!important;margin:0 0 15px}
+  .field{margin-bottom:13px}label{font-size:9px;color:#34465c!important;margin-bottom:5px}
+  input{background:#fff!important;color:#15263b!important;border:1px solid #cfd9e5!important;border-radius:5px;padding:9px;font-size:11px}
+  .unit{font-size:8px;color:#718096!important;margin-top:4px}
+  .result-top{align-items:flex-start;padding-bottom:16px;border-bottom:1px solid #e1e7ee}
+  .result h2{font-size:15px!important;letter-spacing:.3px!important;text-transform:uppercase!important}
+  .location{font-size:10px;color:#617188!important;margin-top:5px}
+  .pill{font-size:8px;letter-spacing:.4px;padding:6px 8px;border-radius:4px;border:0!important}
+  .number{font-size:76px;letter-spacing:-2px;color:#12263e!important;margin:30px 0 8px;font-weight:800}
+  .number span{font-size:20px;color:#64748b!important;letter-spacing:0}
+  .feels{font-size:10px;color:#66768b!important}
+  .status{margin-top:17px;padding:12px;border-radius:6px;border:1px solid #d8e0e9!important;background:#f5f7fa!important;break-inside:avoid}
+  .status strong{font-size:12px;color:#162b43!important;margin-bottom:5px}
+  .status p{font-size:9px;line-height:1.55;color:#405168!important}
+  .bar{gap:4px;margin-top:18px}.segment{height:6px;border-radius:2px}.segment.active{outline:2px solid #15263b;outline-offset:2px}
+  .scale-labels{gap:5px;margin-top:9px}.scale-labels div{font-size:7px;color:#62738a!important;line-height:1.4}.scale-labels strong{font-size:8px;color:#24364c!important;margin-bottom:2px}
+  .disclaimer{font-size:8px;line-height:1.55;color:#617188!important;margin-top:15px;padding-top:10px;border-top:1px solid #e1e7ee}
+  .footer{font-size:8px;color:#66768b!important;border-top:1px solid #d8e0e9;padding-top:10px;margin-top:16px;gap:8px}
+  a{color:#355b82!important;text-decoration:none}
+  .actions,.error{display:none!important}
+  .report-meta{display:flex!important;justify-content:space-between;gap:12px;padding:0 0 12px;margin-bottom:16px;border-bottom:1px solid #e1e7ee;color:#62738a;font-size:8px;letter-spacing:.5px;text-transform:uppercase}
+  .report-note{display:block!important;margin-top:14px;padding:11px 13px;background:#f4f7fa!important;border-left:3px solid #e9a23b;color:#42536a;font-size:9px;line-height:1.55}
+  .report-note strong{display:block;color:#172b43;font-size:9px;margin-bottom:3px}
+  /* Final print overrides: the result card is the sole PDF content. */
+  body:before,body .top,body .report-meta,body main.grid>section:first-child,body .footer,body .report-note{display:none!important}
+  body .wrap{padding-top:0!important}
+  body main.grid>section.result{display:flex!important}
+}
+.report-meta,.report-note{display:none}
+@media(max-width:720px){body{padding:18px 12px 28px}.grid{grid-template-columns:1fr}.card{padding:20px}.number{margin-top:22px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="logo" aria-hidden="true">☀</div><div><div class="eyebrow">Weather • Heat Safety</div><h1>Heat Index Calculator</h1><div class="sub">Philippines · PAGASA heat-index category guide</div></div></header>
+<div class="report-meta"><span>Environmental Conditions • Heat Risk Assessment</span><span id="reportDate">Report date</span></div>
+<main class="grid">
+<section class="card">
+<h2>Enter weather readings</h2><p class="help">Enter air temperature and relative humidity measured for the same place and time.</p>
+<div class="field"><label for="location">Location (optional)</label><input id="location" type="text" placeholder="e.g. Canlaon City" maxlength="70"></div>
+<div class="field"><label for="temp">Air temperature (°C)</label><input id="temp" type="number" min="-20" max="60" step="0.1" value="30" inputmode="decimal"><div class="unit">Enter the measured air temperature.</div></div>
+<div class="field"><label for="humidity">Relative humidity (%)</label><input id="humidity" type="number" min="0" max="100" step="1" value="60" inputmode="decimal"><div class="unit">Valid range: 0–100%.</div></div>
+<div id="error" class="error" role="alert">Please enter a valid temperature (−20 to 60°C) and humidity (0–100%).</div>
+<div class="actions"><button class="primary" id="calculate" type="button">Calculate heat index ↗</button><button class="secondary" id="reset" type="button">Reset</button><button class="pdf-button" id="savePdf" type="button">Save as PDF ↓</button></div>
+</section>
+<section class="card result" aria-live="polite">
+<div class="result-top"><div><h2>Calculated result</h2><div class="location" id="resultLocation">Local estimate</div></div><span class="pill" id="pill">Estimate</span></div>
+<div class="number"><span id="heatIndexValue">—</span><span>°C</span></div><div class="feels">Estimated “feels-like” temperature</div>
+<div class="status" id="status"><strong>Enter readings to calculate</strong><p>The heat index combines air temperature and humidity to estimate how hot it may feel.</p></div>
+<div class="bar" aria-label="PAGASA heat index categories"><div class="segment" id="s0"></div><div class="segment" id="s1"></div><div class="segment" id="s2"></div><div class="segment" id="s3"></div></div>
+<div class="scale-labels"><div><strong>27–32°C</strong>Caution</div><div><strong>33–41°C</strong>Extreme caution</div><div><strong>42–51°C</strong>Danger</div><div><strong>≥52°C</strong>Extreme danger</div></div>
+<p class="disclaimer">This is a mathematical estimate, not an official PAGASA observation or warning. Actual heat risk also depends on sun exposure, wind, activity, and personal health.</p>
+</section>
+</main>
+<div class="report-note"><strong>INTERPRETATION & SAFETY NOTICE</strong>This report presents a calculated heat-index estimate based on the temperature and relative humidity entered. It is not an official PAGASA observation, forecast, or warning. Actual heat exposure may vary with direct sunlight, wind, physical activity, clothing, and individual health.</div>
+<footer class="footer"><span>Reference: <a href="https://www.pagasa.dost.gov.ph/weather/heat-index" target="_blank" rel="noopener noreferrer">Official PAGASA Heat Index page ↗</a></span><span>Standalone calculator · No data uploaded</span></footer>
+</div>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+// Rothfusz heat-index regression. Inputs/outputs use Celsius at the UI;
+// the equation itself is calculated in Fahrenheit.
+function calculateHeatIndexC(tempC, humidity) {
+  const t = tempC * 9 / 5 + 32;
+  const rh = humidity;
+  const simple = 0.5 * (t + 61.0 + ((t - 68.0) * 1.2) + (rh * 0.094));
+  const average = (simple + t) / 2;
+  let hiF;
+  if (average < 80) {
+    hiF = average;
+  } else {
+    hiF = -42.379 + 2.04901523*t + 10.14333127*rh
+      - 0.22475541*t*rh - 0.00683783*t*t
+      - 0.05481717*rh*rh + 0.00122874*t*t*rh
+      + 0.00085282*t*rh*rh - 0.00000199*t*t*rh*rh;
+    if (rh < 13 && t >= 80 && t <= 112) {
+      hiF -= ((13-rh)/4) * Math.sqrt(Math.max(0, (17-Math.abs(t-95))/17));
+    } else if (rh > 85 && t >= 80 && t <= 87) {
+      hiF += ((rh-85)/10) * ((87-t)/5);
+    }
+  }
+  return (hiF - 32) * 5 / 9;
+}
+function getCategory(hi) {
+  if (hi < 27) return {name:"Below caution range", color:"#91a4bb", index:-1,
+    detail:"This estimate is below PAGASA’s first listed heat-index category. Heat can still affect people, especially during prolonged activity or direct sun exposure."};
+  if (hi < 33) return {name:"Caution", color:"#f4d35e", index:0,
+    detail:"Fatigue may occur with prolonged exposure or activity. Drink water and take regular breaks in a shaded or cool area."};
+  if (hi < 42) return {name:"Extreme caution", color:"#f5a623", index:1,
+    detail:"Heat cramps and heat exhaustion are possible. Reduce strenuous outdoor activity, rest in a cool place, and drink water regularly."};
+  if (hi < 52) return {name:"Danger", color:"#f06b35", index:2,
+    detail:"Heat cramps and heat exhaustion are likely, and heat stroke is possible with continued exposure. Avoid strenuous activity and seek a cool place."};
+  return {name:"Extreme danger", color:"#ed4b4b", index:3,
+    detail:"Heat stroke is a serious risk. Avoid heat exposure and strenuous activity. Seek urgent medical help if someone becomes confused, faints, or shows other severe symptoms."};
+}
+function calculate() {
+  const tempRaw = $("temp").value.trim();
+  const humidityRaw = $("humidity").value.trim();
+  const c = Number(tempRaw), rh = Number(humidityRaw);
+  const valid = tempRaw !== "" && humidityRaw !== "" &&
+    Number.isFinite(c) && Number.isFinite(rh) && c >= -20 && c <= 60 && rh >= 0 && rh <= 100;
+  $("error").style.display = valid ? "none" : "block";
+  if (!valid) return;
+
+  const hi = calculateHeatIndexC(c, rh);
+  const cat = getCategory(hi);
+  $("heatIndexValue").textContent = Math.round(hi);
+  $("pill").textContent = cat.name;
+  $("pill").style.background = cat.color;
+  $("pill").style.color = "#172033";
+  $("status").style.borderColor = cat.color;
+  $("status").style.background = cat.color + "18";
+  $("status").replaceChildren();
+  const title = document.createElement("strong");
+  title.textContent = cat.name;
+  const detail = document.createElement("p");
+  detail.textContent = cat.detail;
+  $("status").append(title, detail);
+  $("resultLocation").textContent = $("location").value.trim() || "Local estimate";
+
+  const colors = ["#f4d35e","#f5a623","#f06b35","#ed4b4b"];
+  for (let i=0; i<4; i++) {
+    const segment = $("s"+i);
+    segment.classList.toggle("active", i === cat.index);
+    segment.style.background = colors[i];
+  }
+}
+$("calculate").addEventListener("click", calculate);
+$("savePdf").addEventListener("click", () => {
+  calculate();
+  if ($("error").style.display === "block") return;
+  const oldTitle = document.title;
+  const location = $("location").value.trim();
+  const now = new Date();
+  $("reportDate").textContent = "Generated " + now.toLocaleDateString(undefined,{year:"numeric",month:"long",day:"numeric"});
+  document.title = "Heat-Index-Assessment" + (location ? "-" + location.replace(/[^a-z0-9-]+/gi, "-") : "") + "-" + now.getFullYear() + "-" + String(now.getMonth()+1).padStart(2,"0") + "-" + String(now.getDate()).padStart(2,"0");
+  window.print();
+  setTimeout(() => { document.title = oldTitle; }, 1500);
+});
+$("reset").addEventListener("click", () => {
+  $("location").value = "";
+  $("temp").value = "30";
+  $("humidity").value = "60";
+  calculate();
+});
+["temp","humidity","location"].forEach(id => $(id).addEventListener("keydown", event => {
+  if (event.key === "Enter") calculate();
+}));
+calculate();
+</script>
+</body>
+</html>
