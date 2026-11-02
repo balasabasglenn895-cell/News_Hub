@@ -1,0 +1,675 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Canlaon City Heat Index Dashboard</title>
+
+<style>
+:root {
+    --bg: #070b14;
+    --panel: #101a2b;
+    --border: #243650;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --accent: #38bdf8;
+    --heat-color: #38bdf8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background:
+        radial-gradient(circle at top, #142d4b, transparent 45%),
+        var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+}
+
+/* HEADER */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 15px 0 30px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo {
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 15px;
+    font-size: 28px;
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+    box-shadow: 0 0 25px #0284c733;
+}
+
+.brand h1 {
+    font-size: 21px;
+    letter-spacing: 1px;
+}
+
+.brand p {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+    letter-spacing: 1px;
+}
+
+.clock {
+    text-align: right;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 18px;
+}
+
+.clock strong {
+    color: var(--accent);
+    font-size: 21px;
+    display: block;
+}
+
+.clock span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* CARDS */
+
+.card {
+    background: linear-gradient(145deg, #111d30, #0d1625);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    box-shadow: 0 15px 40px #00000020;
+}
+
+.section-title {
+    font-size: 13px;
+    color: #cbd5e1;
+    letter-spacing: 1.5px;
+    margin-bottom: 22px;
+}
+
+/* WEATHER INFORMATION */
+
+.weather-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.weather-box {
+    background: #091321;
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.weather-box span {
+    color: var(--muted);
+    font-size: 12px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.weather-box strong {
+    font-size: 32px;
+    letter-spacing: -1px;
+}
+
+.weather-box small {
+    color: var(--accent);
+    font-size: 14px;
+}
+
+/* HEAT INDEX */
+
+.result {
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.result::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--heat-color);
+    filter: blur(140px);
+    opacity: .18;
+    pointer-events: none;
+}
+
+.result-label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 3px;
+}
+
+.temperature {
+    font-size: clamp(65px, 13vw, 105px);
+    font-weight: 800;
+    letter-spacing: -5px;
+    color: var(--heat-color);
+    margin: 15px 0;
+}
+
+.feels {
+    color: #cbd5e1;
+    font-size: 15px;
+}
+
+.status {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: 1px solid var(--heat-color);
+    color: var(--heat-color);
+    background: #ffffff08;
+}
+
+.result-info {
+    margin-top: 25px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* ADVISORY */
+
+.advisory {
+    border-left: 4px solid var(--heat-color);
+    padding: 18px;
+    background: #091321;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+.advisory h3 {
+    font-size: 14px;
+    color: var(--heat-color);
+    margin-bottom: 8px;
+}
+
+.advisory p {
+    color: #cbd5e1;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* PAGASA CLASSIFICATIONS */
+
+.levels {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.level {
+    padding: 17px;
+    background: #091321;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.level strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.level span {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.level.active {
+    border-color: var(--heat-color);
+    background: #ffffff08;
+    box-shadow: 0 0 20px #ffffff08;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.8;
+    padding: 20px 5px;
+}
+
+@media(max-width: 600px) {
+    body {
+        padding: 12px;
+    }
+
+    header {
+        align-items: flex-start;
+    }
+
+    .brand h1 {
+        font-size: 17px;
+    }
+
+    .clock {
+        width: 100%;
+        text-align: left;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .weather-grid,
+    .levels {
+        grid-template-columns: 1fr;
+    }
+
+    .weather-box strong {
+        font-size: 29px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <div class="brand">
+        <div class="logo">☀</div>
+
+        <div>
+            <h1>CANLAON CITY</h1>
+            <p>TEMPERATURE & HEAT INDEX MONITOR</p>
+        </div>
+    </div>
+
+    <div class="clock">
+        <strong id="clock">00:00:00</strong>
+        <span id="date">Loading Philippine Standard Time...</span>
+    </div>
+</header>
+
+<!-- WEATHER OBSERVATION -->
+
+<div class="card">
+
+    <h2 class="section-title">
+        WEATHER OBSERVATION
+    </h2>
+
+    <div class="weather-grid">
+
+        <div class="weather-box">
+            <span>AIR TEMPERATURE</span>
+            <strong id="temperature">--</strong>
+            <small>°C</small>
+        </div>
+
+        <div class="weather-box">
+            <span>RELATIVE HUMIDITY</span>
+            <strong id="humidity">--</strong>
+            <small>%</small>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- HEAT INDEX RESULT -->
+
+<div class="card result" id="resultCard">
+
+    <div class="result-label">
+        CALCULATED HEAT INDEX
+    </div>
+
+    <div class="temperature" id="heatIndex">
+        --°C
+    </div>
+
+    <div class="feels">
+        FEELS LIKE TEMPERATURE
+    </div>
+
+    <div class="status" id="status">
+        CALCULATING...
+    </div>
+
+    <div class="result-info">
+        CANLAON CITY, NEGROS ORIENTAL<br>
+        Philippine Standard Time · UTC+8
+    </div>
+
+    <div class="advisory">
+        <h3 id="advisoryTitle">HEAT ADVISORY</h3>
+        <p id="advisoryText">
+            Heat index information will appear here.
+        </p>
+    </div>
+
+</div>
+
+<!-- PAGASA CLASSIFICATION -->
+
+<div class="card">
+
+    <h2 class="section-title">
+        PAGASA HEAT INDEX CLASSIFICATION
+    </h2>
+
+    <div class="levels">
+
+        <div class="level" id="level1">
+            <strong>27–32°C · CAUTION</strong>
+            <span>
+                Fatigue is possible with prolonged exposure.
+            </span>
+        </div>
+
+        <div class="level" id="level2">
+            <strong>33–41°C · EXTREME CAUTION</strong>
+            <span>
+                Heat cramps and heat exhaustion are possible.
+            </span>
+        </div>
+
+        <div class="level" id="level3">
+            <strong>42–51°C · DANGER</strong>
+            <span>
+                Heat cramps and heat exhaustion are likely.
+            </span>
+        </div>
+
+        <div class="level" id="level4">
+            <strong>52°C AND ABOVE · EXTREME DANGER</strong>
+            <span>
+                Heat stroke is highly likely.
+            </span>
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    CANLAON CITY WEATHER MONITORING<br>
+    TEMPERATURE & HEAT INDEX DASHBOARD<br>
+    Heat index is an estimate and not an official PAGASA observation.<br>
+    Always follow official PAGASA advisories.
+</footer>
+
+</div>
+
+<script>
+
+// ============================================
+// CANLAON CITY WEATHER OBSERVATION
+// EDIT ONLY THESE TWO VALUES
+// ============================================
+
+const AIR_TEMPERATURE = 29.3;  // Celsius
+const RELATIVE_HUMIDITY = 64;  // Percentage
+
+// ============================================
+// LIVE PHILIPPINE STANDARD TIME
+// ============================================
+
+function updateClock() {
+
+    const now = new Date();
+
+    document.getElementById("clock").textContent =
+        now.toLocaleTimeString("en-PH", {
+            timeZone: "Asia/Manila",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true
+        });
+
+    document.getElementById("date").textContent =
+        now.toLocaleDateString("en-PH", {
+            timeZone: "Asia/Manila",
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        }) + " · PHT";
+}
+
+updateClock();
+
+setInterval(updateClock, 1000);
+
+// ============================================
+// HEAT INDEX CALCULATION
+// Rothfusz regression equation
+// ============================================
+
+function calculateHeatIndex(celsius, humidity) {
+
+    const T = celsius * 9 / 5 + 32;
+    const R = humidity;
+
+    // Simple heat index approximation
+
+    const simple = 0.5 * (
+        T + 61 + ((T - 68) * 1.2) + (R * 0.094)
+    );
+
+    let HI = (simple + T) / 2;
+
+    // Rothfusz regression
+
+    if (HI >= 80) {
+
+        HI = -42.379
+            + 2.04901523 * T
+            + 10.14333127 * R
+            - 0.22475541 * T * R
+            - 0.00683783 * T * T
+            - 0.05481717 * R * R
+            + 0.00122874 * T * T * R
+            + 0.00085282 * T * R * R
+            - 0.00000199 * T * T * R * R;
+
+        // Low humidity adjustment
+
+        if (R < 13 && T >= 80 && T <= 112) {
+
+            HI -= ((13 - R) / 4) *
+                Math.sqrt((17 - Math.abs(T - 95)) / 17);
+
+        }
+
+        // High humidity adjustment
+
+        else if (R > 85 && T >= 80 && T <= 87) {
+
+            HI += ((R - 85) / 10) *
+                ((87 - T) / 5);
+
+        }
+    }
+
+    // Fahrenheit to Celsius
+
+    return (HI - 32) * 5 / 9;
+}
+
+// ============================================
+// PAGASA HEAT INDEX CATEGORIES
+// ============================================
+
+function getCategory(heatIndex) {
+
+    if (heatIndex < 27) {
+
+        return {
+            name: "BELOW PAGASA ADVISORY LEVEL",
+            color: "#38bdf8",
+            level: 0,
+            advisory:
+                "The calculated heat index is below the PAGASA heat-index advisory categories. Continue monitoring weather conditions and stay hydrated."
+        };
+
+    } else if (heatIndex < 33) {
+
+        return {
+            name: "CAUTION",
+            color: "#facc15",
+            level: 1,
+            advisory:
+                "Fatigue is possible with prolonged exposure. Drink water regularly and take breaks in shaded or cool areas."
+        };
+
+    } else if (heatIndex < 42) {
+
+        return {
+            name: "EXTREME CAUTION",
+            color: "#fb923c",
+            level: 2,
+            advisory:
+                "Heat cramps and heat exhaustion are possible. Limit strenuous outdoor activity and stay hydrated."
+        };
+
+    } else if (heatIndex < 52) {
+
+        return {
+            name: "DANGER",
+            color: "#ef4444",
+            level: 3,
+            advisory:
+                "Heat cramps and heat exhaustion are likely. Heat stroke is possible. Avoid prolonged exposure to direct sunlight."
+        };
+
+    } else {
+
+        return {
+            name: "EXTREME DANGER",
+            color: "#c084fc",
+            level: 4,
+            advisory:
+                "Heat stroke is highly likely. Avoid strenuous activity and seek a cool place immediately. Seek medical assistance if symptoms occur."
+        };
+
+    }
+}
+
+// ============================================
+// DISPLAY CALCULATED WEATHER
+// ============================================
+
+function updateDashboard() {
+
+    const temperature = AIR_TEMPERATURE;
+    const humidity = RELATIVE_HUMIDITY;
+
+    const heatIndex = calculateHeatIndex(
+        temperature,
+        humidity
+    );
+
+    const category = getCategory(heatIndex);
+
+    // Display temperature
+
+    document.getElementById("temperature").textContent =
+        temperature.toFixed(1);
+
+    // Display humidity
+
+    document.getElementById("humidity").textContent =
+        humidity;
+
+    // Display heat index
+
+    document.getElementById("heatIndex").textContent =
+        heatIndex.toFixed(1) + "°C";
+
+    // Display classification
+
+    document.getElementById("status").textContent =
+        category.name;
+
+    // Apply classification color
+
+    document.documentElement.style.setProperty(
+        "--heat-color",
+        category.color
+    );
+
+    // Advisory information
+
+    document.getElementById("advisoryTitle").textContent =
+        "HEAT ADVISORY · " + category.name;
+
+    document.getElementById("advisoryText").textContent =
+        category.advisory;
+
+    // Highlight corresponding category
+
+    document.querySelectorAll(".level").forEach(level => {
+        level.classList.remove("active");
+    });
+
+    if (category.level >= 1) {
+
+        document.getElementById(
+            "level" + category.level
+        ).classList.add("active");
+
+    }
+
+}
+
+// ============================================
+// INITIALIZE DASHBOARD
+// ============================================
+
+updateDashboard();
+
+</script>
+
+</body>
+</html>
