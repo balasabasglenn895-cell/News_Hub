@@ -1,0 +1,496 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Glenn's Printing Shop</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+    --primary: #2563eb;
+    --dark: #0f172a;
+    --light: #f8fafc;
+    --text: #334155;
+    --muted: #64748b;
+    --border: #e2e8f0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #f1f5f9;
+    color: var(--text);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 25px 18px;
+}
+
+/* HEADER */
+
+.header {
+    background: linear-gradient(135deg, #0f172a, #1e40af);
+    color: white;
+    padding: 45px 25px;
+    border-radius: 22px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(15, 23, 42, 0.15);
+}
+
+.header::after {
+    content: "";
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+    right: -70px;
+    top: -70px;
+}
+
+.logo {
+    font-size: 13px;
+    letter-spacing: 3px;
+    font-weight: 700;
+    color: #93c5fd;
+    margin-bottom: 12px;
+}
+
+.header h1 {
+    font-size: clamp(30px, 6vw, 48px);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 12px;
+}
+
+.header p {
+    color: #cbd5e1;
+    font-size: 15px;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    background: rgba(255,255,255,0.12);
+    padding: 9px 15px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.dot {
+    width: 9px;
+    height: 9px;
+    background: #22c55e;
+    border-radius: 50%;
+}
+
+.closed .dot {
+    background: #ef4444;
+}
+
+/* SECTION */
+
+.section {
+    margin-top: 35px;
+}
+
+.section-heading {
+    margin-bottom: 18px;
+}
+
+.section-heading h2 {
+    color: var(--dark);
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.section-heading p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* CARDS */
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.03);
+}
+
+.schedule {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #f8fafc;
+    border-radius: 12px;
+    gap: 10px;
+}
+
+.schedule-item strong {
+    color: var(--dark);
+    font-size: 14px;
+}
+
+.schedule-item span {
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+}
+
+/* PRICE LIST */
+
+.price-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+}
+
+.price-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.03);
+}
+
+.price-card h3 {
+    color: var(--dark);
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.price-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 13px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+}
+
+.price-item:last-child {
+    border-bottom: none;
+}
+
+.price-item .name {
+    color: #475569;
+    flex: 1;
+}
+
+.price-item .price {
+    color: var(--primary);
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.notice {
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    padding: 18px;
+    border-radius: 14px;
+    color: #1e40af;
+    font-size: 14px;
+}
+
+/* FACEBOOK */
+
+.facebook {
+    display: block;
+    text-decoration: none;
+    background: linear-gradient(135deg, #1877f2, #1d4ed8);
+    color: white;
+    padding: 22px;
+    border-radius: 16px;
+    text-align: center;
+    font-weight: 800;
+    transition: 0.25s;
+}
+
+.facebook:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+}
+
+.facebook small {
+    display: block;
+    margin-top: 5px;
+    font-weight: 400;
+    color: #dbeafe;
+}
+
+/* FOOTER */
+
+.footer {
+    text-align: center;
+    margin-top: 35px;
+    padding: 25px 10px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.footer strong {
+    color: var(--dark);
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 14px;
+    }
+
+    .header {
+        padding: 32px 22px;
+        border-radius: 17px;
+    }
+
+    .card, .price-card {
+        padding: 18px;
+    }
+
+    .section-heading h2 {
+        font-size: 21px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- SHOP HEADER -->
+
+    <header class="header">
+        <div class="logo">PRINTING • PHOTOCOPY • LAMINATING</div>
+
+        <h1>GLENN'S<br>PRINTING SHOP</h1>
+
+        <p>Your trusted printing and photocopying service.</p>
+
+        <div class="status" id="shopStatus">
+            <span class="dot"></span>
+            <span id="statusText">OPEN</span>
+        </div>
+    </header>
+
+    <!-- BUSINESS SCHEDULE -->
+
+    <section class="section">
+        <div class="section-heading">
+            <h2>Business Schedule</h2>
+            <p>Our regular operating hours</p>
+        </div>
+
+        <div class="card schedule">
+            <div class="schedule-item">
+                <strong>Monday – Friday</strong>
+                <span>5:00 PM – 8:00 PM</span>
+            </div>
+
+            <div class="schedule-item">
+                <strong>Saturday</strong>
+                <span>7:00 AM – 8:00 PM</span>
+            </div>
+
+            <div class="schedule-item">
+                <strong>Sunday</strong>
+                <span>11:30 AM – 8:00 PM</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRINTING SERVICES -->
+
+    <section class="section">
+        <div class="section-heading">
+            <h2>Our Services & Price List</h2>
+            <p>Affordable and quality printing services</p>
+        </div>
+
+        <div class="price-grid" id="priceGrid"></div>
+    </section>
+
+    <!-- OTHER PRINTING -->
+
+    <section class="section">
+        <div class="section-heading">
+            <h2>Other Printing Services</h2>
+        </div>
+
+        <div class="notice">
+            Other printing services will be announced soon.
+            Stay updated through Glenn's Printing Shop Facebook Page.
+        </div>
+    </section>
+
+    <!-- FACEBOOK PAGE -->
+
+    <section class="section">
+        <a class="facebook"
+           href="https://www.facebook.com/share/1DizmNzZtf/"
+           target="_blank"
+           rel="noopener noreferrer">
+
+            Visit Glenn's Printing Shop Facebook Page
+
+            <small>Follow us for announcements and updates</small>
+        </a>
+    </section>
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+        <strong>GLENN'S PRINTING SHOP</strong>
+        <p>Quality Printing • Affordable Prices • Reliable Service</p>
+        <p>© <span id="year"></span> Glenn's Printing Shop. All Rights Reserved.</p>
+    </footer>
+
+</div>
+
+<script>
+
+/* =====================================
+   SHOP STATUS EDITOR
+   Change "OPEN" to "CLOSED"
+   ===================================== */
+
+const SHOP_STATUS = "CLOSED";
+
+
+/* =====================================
+   PRICE EDITOR
+   Edit prices directly below.
+   Example: price: 20
+   ===================================== */
+
+const services = [
+
+    {
+        title: "Printing",
+        items: [
+            { name: "Borderless Printing (A4)", price: 20 },
+            { name: "Print Colored (A4, Legal, Short)", price: 5 },
+            { name: "Print - B/W (A4, Legal, Short)", price: 2 },
+            { name: "Photocopy / Xerox - Colored", price: 5 },
+            { name: "Photocopy / Xerox - B/W", price: 2 }
+        ]
+    },
+
+    {
+        title: "Photo Laminating",
+        items: [
+            { name: "Laminate (A4)", price: 40 },
+            { name: "Laminate ID (70mm × 100mm)", price: 20 },
+            { name: "Laminate ID (65mm × 95mm)", price: 20 },
+            { name: "Laminate ID (80mm × 110mm)", price: 30 }
+        ]
+    },
+
+    {
+        title: "Tarpapel Printing",
+        items: [
+            { name: "Tarpapel (2×1)", price: 10 },
+            { name: "Tarpapel (2×2)", price: 20 },
+            { name: "Tarpapel (3×3)", price: 45 },
+            { name: "Tarpapel (4×4)", price: 80 }
+        ]
+    }
+
+];
+
+
+/* =====================================
+   DISPLAY SHOP STATUS
+   ===================================== */
+
+const statusBox = document.getElementById("shopStatus");
+const statusText = document.getElementById("statusText");
+
+statusText.textContent = SHOP_STATUS;
+
+if (SHOP_STATUS.toUpperCase() === "CLOSED") {
+    statusBox.classList.add("closed");
+}
+
+
+/* =====================================
+   DISPLAY PRICE LIST
+   ===================================== */
+
+const priceGrid = document.getElementById("priceGrid");
+
+services.forEach(service => {
+
+    const card = document.createElement("div");
+    card.className = "price-card";
+
+    const heading = document.createElement("h3");
+    heading.textContent = service.title;
+
+    card.appendChild(heading);
+
+    service.items.forEach(item => {
+
+        const row = document.createElement("div");
+        row.className = "price-item";
+
+        const name = document.createElement("span");
+        name.className = "name";
+        name.textContent = item.name;
+
+        const price = document.createElement("span");
+        price.className = "price";
+        price.textContent = "₱" + item.price;
+
+        row.appendChild(name);
+        row.appendChild(price);
+
+        card.appendChild(row);
+
+    });
+
+    priceGrid.appendChild(card);
+
+});
+
+
+/* =====================================
+   AUTOMATIC COPYRIGHT YEAR
+   ===================================== */
+
+document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+</script>
+
+</body>
+</html>
