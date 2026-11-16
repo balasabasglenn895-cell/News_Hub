@@ -1,0 +1,693 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101b35">
+
+<title>Keychain Stock Availability</title>
+
+<style>
+:root {
+  --navy: #101b35;
+  --navy2: #19294c;
+  --blue: #3478f6;
+  --ink: #17233d;
+  --muted: #71809a;
+  --line: #e7ecf4;
+  --bg: #f4f7fc;
+  --green: #13845b;
+  --amber: #b7791f;
+  --red: #c43e50;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  font-family: Inter, Arial, sans-serif;
+  color: var(--ink);
+}
+
+/* HEADER */
+
+header {
+  background: linear-gradient(125deg, var(--navy), var(--navy2));
+  color: white;
+  padding: 38px 22px 72px;
+}
+
+.header-inner {
+  max-width: 1050px;
+  margin: auto;
+}
+
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: #a9c5ff;
+  font-weight: 800;
+}
+
+h1 {
+  font-size: clamp(28px, 5vw, 43px);
+  margin: 12px 0 10px;
+  letter-spacing: -1.2px;
+}
+
+.subtitle {
+  color: #c1cce0;
+  margin: 0;
+  font-size: 15px;
+}
+
+/* MAIN */
+
+main {
+  max-width: 1050px;
+  margin: -42px auto 0;
+  padding: 0 20px 50px;
+}
+
+/* SUMMARY */
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.metric,
+.stock-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(25,45,82,.055);
+}
+
+.metric {
+  padding: 18px 20px;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.metric-value {
+  font-size: 30px;
+  font-weight: 800;
+  margin-top: 5px;
+}
+
+/* SECTION */
+
+.section-head {
+  margin: 30px 2px 14px;
+}
+
+.section-head h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.section-head p {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* PRODUCT GRID */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.stock-card {
+  padding: 22px;
+  display: flex;
+  gap: 17px;
+  align-items: center;
+  min-height: 142px;
+  transition: .2s ease;
+}
+
+.stock-card:hover {
+  transform: translateY(-3px);
+}
+
+/* SHAPE ICON */
+
+.shape {
+  width: 66px;
+  height: 66px;
+  flex: 0 0 66px;
+  border-radius: 17px;
+  background: #edf3ff;
+  display: grid;
+  place-items: center;
+  color: #326fe0;
+}
+
+.shape svg {
+  width: 43px;
+  height: 43px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.product-name {
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0 0 7px;
+}
+
+.quantity {
+  font-size: 27px;
+  font-weight: 850;
+}
+
+.quantity small {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* STATUS BADGES */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.in-stock {
+  color: var(--green);
+  background: #e8f6ef;
+}
+
+.out-of-stock {
+  color: var(--amber);
+  background: #fff5e4;
+}
+
+.unavailable {
+  color: var(--red);
+  background: #fff0f1;
+}
+
+/* ORDER BUTTON */
+
+.order-section {
+  text-align: center;
+  margin: 32px 0 10px;
+}
+
+.order-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+  padding: 17px 24px;
+  background: linear-gradient(135deg, #3478f6, #1749b5);
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  border-radius: 13px;
+  box-shadow: 0 8px 20px rgba(52,120,246,.22);
+  transition: .25s ease;
+}
+
+.order-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(52,120,246,.3);
+}
+
+.order-button span {
+  font-size: 21px;
+}
+
+.order-section p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 12px;
+}
+
+/* REMINDER */
+
+.note {
+  margin-top: 25px;
+  background: #edf3ff;
+  border: 1px solid #dce7ff;
+  border-radius: 14px;
+  padding: 15px 17px;
+  color: #425575;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* FOOTER */
+
+footer {
+  text-align: center;
+  color: #8a96aa;
+  font-size: 11px;
+  padding: 8px 20px 28px;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:650px) {
+
+  header {
+    padding: 30px 20px 65px;
+  }
+
+  .summary {
+    gap: 9px;
+  }
+
+  .metric {
+    padding: 14px 12px;
+  }
+
+  .metric-value {
+    font-size: 25px;
+  }
+
+  .metric-label {
+    font-size: 10px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stock-card {
+    padding: 18px;
+  }
+}
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .metric,
+  .stock-card {
+    box-shadow: none;
+  }
+
+  .order-button {
+    box-shadow: none;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+  <div class="header-inner">
+
+    <div class="eyebrow">
+      PRODUCT INVENTORY • LIVE STOCK LIST
+    </div>
+
+    <h1>Keychain Stock Availability</h1>
+
+    <p class="subtitle">
+      Current stock quantities and availability
+      of our customized keychain designs.
+    </p>
+
+  </div>
+
+</header>
+
+<main>
+
+  <!-- STOCK SUMMARY -->
+
+  <section class="summary">
+
+    <div class="metric">
+
+      <div class="metric-label">
+        TOTAL AVAILABLE
+      </div>
+
+      <div class="metric-value" id="total">
+        35
+      </div>
+
+    </div>
+
+    <div class="metric">
+
+      <div class="metric-label">
+        DESIGNS IN STOCK
+      </div>
+
+      <div class="metric-value" id="inStock">
+        2
+      </div>
+
+    </div>
+
+    <div class="metric">
+
+      <div class="metric-label">
+        UNAVAILABLE DESIGNS
+      </div>
+
+      <div class="metric-value" id="unavailableCount">
+        2
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- PRODUCT SECTION -->
+
+  <div class="section-head">
+
+    <h2>Available Designs</h2>
+
+    <p>
+      Check the current status before placing an order.
+    </p>
+
+  </div>
+
+  <section class="grid" id="products"></section>
+
+  <!-- FACEBOOK ORDER BUTTON -->
+
+  <div class="order-section">
+
+    <a
+      href="https://www.facebook.com/share/1DajoZZNt3/"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="order-button">
+
+      PLACE YOUR ORDER HERE
+
+      <span>→</span>
+
+    </a>
+
+    <p>
+      Ready to order? Visit our Facebook page
+      and send us a message!
+    </p>
+
+  </div>
+
+  <!-- STOCK REMINDER -->
+
+  <div class="note">
+
+    <strong>STOCK REMINDER</strong><br>
+
+    Quantities may change as orders are confirmed.
+    Please message us to verify availability
+    before ordering.
+
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+
+  KEYCHAIN INVENTORY • STOCK INFORMATION
+
+</footer>
+
+<script>
+
+/*
+================================================
+           KEYCHAIN INVENTORY
+================================================
+
+EDIT ONLY THIS SECTION TO UPDATE YOUR STOCK.
+
+STATUS OPTIONS:
+
+"in-stock"     = ON STOCK
+"out-of-stock" = OUT OF STOCK
+"unavailable"  = UNAVAILABLE
+
+EXAMPLES:
+
+ON STOCK:
+quantity: 10,
+status: "in-stock"
+
+OUT OF STOCK:
+quantity: 0,
+status: "out-of-stock"
+
+UNAVAILABLE:
+quantity: 0,
+status: "unavailable"
+
+================================================
+*/
+
+const inventory = [
+
+  {
+    name: "Rectangle (Portrait)",
+    quantity: 10,
+    status: "in-stock",
+    shape: "rectangle"
+  },
+
+  {
+    name: "Circle",
+    quantity: 25,
+    status: "in-stock",
+    shape: "circle"
+  },
+
+  {
+    name: "Butterfly",
+    quantity: 0,
+    status: "unavailable",
+    shape: "butterfly"
+  },
+
+  {
+    name: "Square",
+    quantity: 0,
+    status: "unavailable",
+    shape: "square"
+  }
+
+];
+
+
+/* STATUS LABELS */
+
+const labels = {
+
+  "in-stock": "ON STOCK",
+
+  "out-of-stock": "OUT OF STOCK",
+
+  "unavailable": "UNAVAILABLE"
+
+};
+
+
+/* DESIGN ICONS */
+
+const icons = {
+
+  rectangle: `
+    <rect x="12" y="4" width="20" height="36" rx="2"/>
+    <circle cx="22" cy="8" r="1"/>
+  `,
+
+  circle: `
+    <circle cx="22" cy="22" r="17"/>
+    <circle cx="22" cy="22" r="2"/>
+  `,
+
+  butterfly: `
+    <path d="M22 21c-3-8-12-16-17-10-5 7 4 14 17 12
+    -7 1-12 7-7 11 4 3 8-4 7-11
+    1 7 3 14 8 11 5-4 0-10-8-11
+    13 2 22-5 17-12-5-6-14 2-17 10z"/>
+    <path d="M22 17v17"/>
+  `,
+
+  square: `
+    <rect x="6" y="6" width="32" height="32" rx="3"/>
+    <circle cx="22" cy="10" r="1"/>
+  `
+
+};
+
+
+/* RENDER INVENTORY */
+
+function render() {
+
+  const products =
+    document.getElementById("products");
+
+  products.innerHTML = inventory.map(item => {
+
+    let status = labels[item.status]
+      ? item.status
+      : "unavailable";
+
+    const qty = status === "in-stock"
+      ? Math.max(0, Number(item.quantity) || 0)
+      : 0;
+
+    const displayStatus =
+      status === "in-stock" && qty === 0
+        ? "out-of-stock"
+        : status;
+
+    const quantityText =
+      displayStatus === "in-stock"
+        ? `${qty} <small>pcs available</small>`
+        : displayStatus === "out-of-stock"
+          ? `0 <small>pcs available</small>`
+          : `—`;
+
+    return `
+
+      <article class="stock-card">
+
+        <div class="shape">
+
+          <svg viewBox="0 0 44 44">
+
+            ${icons[item.shape] || icons.square}
+
+          </svg>
+
+        </div>
+
+        <div class="card-content">
+
+          <h3 class="product-name">
+            ${item.name}
+          </h3>
+
+          <div class="quantity">
+            ${quantityText}
+          </div>
+
+          <div class="status ${displayStatus}">
+
+            <span class="dot"></span>
+
+            ${labels[displayStatus]}
+
+          </div>
+
+        </div>
+
+      </article>
+
+    `;
+
+  }).join("");
+
+
+  /* AUTOMATIC TOTAL STOCK */
+
+  const total = inventory.reduce(
+    (sum, item) => {
+
+      return sum + (
+        item.status === "in-stock"
+          ? Math.max(0, Number(item.quantity) || 0)
+          : 0
+      );
+
+    },
+    0
+  );
+
+
+  document.getElementById("total").textContent =
+    total;
+
+
+  /* DESIGNS IN STOCK */
+
+  document.getElementById("inStock").textContent =
+
+    inventory.filter(
+      item =>
+        item.status === "in-stock" &&
+        Number(item.quantity) > 0
+    ).length;
+
+
+  /* UNAVAILABLE DESIGNS */
+
+  document.getElementById("unavailableCount").textContent =
+
+    inventory.filter(
+      item => item.status === "unavailable"
+    ).length;
+
+}
+
+
+/* INITIALIZE WEBSITE */
+
+render();
+
+</script>
+
+</body>
+</html>
